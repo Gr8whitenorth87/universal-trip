@@ -9,7 +9,8 @@ Open it on a phone and use **Share → Add to Home Screen**. After the first loa
 - Static site served by GitHub Pages. No build step for the app itself.
 - Live waits come from the free [ThemeParks.wiki](https://themeparks.wiki) API, straight from the phone. If that fails, the app reads a backup copy that `.github/workflows/live-backup.yml` refreshes every ~10 minutes during the trip (branch `live-data`).
 - Map tiles are © OpenStreetMap contributors.
-- Ride, food and hunt data live in `data/src/`. After editing those files, run `python3 tools/build_data.py` to regenerate `data/app-data.json`.
+- The site is password-protected: everything the app shows is in `data/app-data.enc.json`, encrypted with the family password. Each phone asks once, then remembers.
+- Research data (rides, food, hunts) lives in `data/src/`. The family's own plan, dining and birthday files are in `data/src/private/`, which is not committed; an encrypted copy is kept in `data/src/private.enc.json`. Rebuild with `TRIP_PASSWORD=... python3 tools/build_data.py`.
 - Progress (rides done, Express used, details found, Butterbeer tried) is saved on each phone.
 
 Add `?now=2026-10-15T10:30` to the URL to preview a park day before the trip.

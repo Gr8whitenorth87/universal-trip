@@ -1,11 +1,18 @@
 #!/usr/bin/env python3
-"""Build data/app-data.json from the research sources in data/src/.
+"""Build the encrypted trip bundle data/app-data.enc.json from data/src/.
 
-Run from the repo root:  python3 tools/build_data.py
+Run from the repo root:  TRIP_PASSWORD=... python3 tools/build_data.py
+
+The family-specific files (plan, guide, dining, birthday) are not committed in plain text.
+They live in data/src/private/ (git-ignored) and are also saved, encrypted with the same
+password, as data/src/private.enc.json so they can be restored on any machine.
 Prints any names it could not place on the map so they can be fixed in OVERRIDES.
 """
+import base64
+import hashlib
 import json
 import math
+import os
 import re
 import sys
 import unicodedata
@@ -14,7 +21,46 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "data" / "src"
-OUT = ROOT / "data" / "app-data.json"
+OUT = ROOT / "data" / "app-data.enc.json"
+PRIVATE_DIR = SRC / "private"
+PRIVATE_ENC = SRC / "private.enc.json"
+PRIVATE_FILES = ["plan.json", "guide.json", "dining.json", "birthday.json"]
+# Fixed salt so a phone that already unlocked keeps working after each rebuild.
+SALT = hashlib.sha256(b"universal-trip-2026").digest()[:16]
+ITERATIONS = 200_000
+
+
+def _key(password):
+    from cryptography.hazmat.primitives import hashes
+    from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+    return PBKDF2HMAC(algorithm=hashes.SHA256(), length=32, salt=SALT, iterations=ITERATIONS).derive(password.encode())
+
+
+def encrypt(obj, password):
+    from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+    iv = os.urandom(12)
+    ct = AESGCM(_key(password)).encrypt(iv, json.dumps(obj, ensure_ascii=False, separators=(",", ":")).encode(), None)
+    b64 = lambda b: base64.b64encode(b).decode()
+    return {"v": 1, "kdf": "PBKDF2-SHA256", "iter": ITERATIONS, "salt": b64(SALT), "iv": b64(iv), "ct": b64(ct)}
+
+
+def decrypt(blob, password):
+    from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+    raw = AESGCM(_key(password)).decrypt(base64.b64decode(blob["iv"]), base64.b64decode(blob["ct"]), None)
+    return json.loads(raw)
+
+
+def load_private(password):
+    """Plain files in data/src/private/ win; otherwise restore them from the encrypted copy."""
+    if all((PRIVATE_DIR / f).exists() for f in PRIVATE_FILES):
+        files = {f: json.loads((PRIVATE_DIR / f).read_text()) for f in PRIVATE_FILES}
+        PRIVATE_ENC.write_text(json.dumps(encrypt(files, password)))
+        return files
+    files = decrypt(json.loads(PRIVATE_ENC.read_text()), password)
+    PRIVATE_DIR.mkdir(exist_ok=True)
+    for name, content in files.items():
+        (PRIVATE_DIR / name).write_text(json.dumps(content, ensure_ascii=False, indent=1))
+    return files
 
 PARKS = {
     "USF": {"id": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57", "name": "Universal Studios Florida", "short": "Studios"},
@@ -158,6 +204,10 @@ def slug(s):
 
 
 def main():
+    password = os.environ.get("TRIP_PASSWORD")
+    if not password:
+        sys.exit("Set TRIP_PASSWORD to the app password.")
+    private = load_private(password)
     problems = []
     coords = {p: load(f"coords_{p}.json") for p in PARKS}
     by_norm = {p: {norm(c["name"]): c for c in coords[p]} for p in PARKS}
@@ -275,6 +325,8 @@ def main():
     # ---------- food ----------
     food = []
     for f in load("food.json"):
+        if f.get("category") == "table-service":
+            continue  # sit-down picks come from private/dining.json
         park = f["park"] if f["park"] in PARKS else f["park"]
         loc = f.get("location") or ""
         ent = None
@@ -323,6 +375,15 @@ def main():
     interactive = place(load("interactive.json"))
     photos = place(load("photos.json"))
 
+    dining = private["dining.json"]
+    for d in dining["picks"] + dining["alternates"]:
+        if d.get("park") in PARKS:
+            ent = find_entity(d["park"], d["name"], {"RESTAURANT"})
+            if ent:
+                d["lat"], d["lng"] = ent["lat"], ent["lng"]
+            else:
+                problems.append(f"dining no point: {d['name']}")
+
     data = {
         "builtFrom": "data/src (research checked Oct 6, 2026)",
         "parks": parks,
@@ -333,8 +394,11 @@ def main():
         "hunts": hunts,
         "interactive": interactive,
         "photos": photos,
-        "plan": json.loads((SRC / "plan.json").read_text()) if (SRC / "plan.json").exists() else None,
-        "guide": json.loads((SRC / "guide.json").read_text()) if (SRC / "guide.json").exists() else None,
+        "plan": private["plan.json"],
+        "guide": private["guide.json"],
+        "dining": dining,
+        "birthday": private["birthday.json"],
+        "riders": [{"name": "Youngest", "height": 51.5}, {"name": "Twins", "height": 54.5}],
     }
     keys = {a["key"] for a in attractions}
     for day in (data["plan"] or {}).get("days", []):
@@ -342,7 +406,7 @@ def main():
             for t in step.get("targets", []):
                 if t not in keys:
                     problems.append(f"plan target missing: {day['date']} {t}")
-    OUT.write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")))
+    OUT.write_text(json.dumps(encrypt(data, password)))
     print(f"wrote {OUT.relative_to(ROOT)}: {OUT.stat().st_size // 1024} KB, "
           f"{len(attractions)} attractions, {len(food)} food, {len(shows)} shows, {len(hunts)} hunts")
     for p in problems:

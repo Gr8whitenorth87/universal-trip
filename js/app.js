@@ -1,5 +1,6 @@
 import { orlandoNow, toMinutes, fmtTime, ago, walkMinutes, meters, directionsLinks, isApple, store, icon } from "./util.js";
 import { initLive, setFocusPark, onLive, live, liveFor, refresh, scheduleFor } from "./live.js";
+import { savedKey, decryptWith, askPassword, forgetKey } from "./lock.js";
 import { initMap, mapReady, invalidate, showLayer, fitPark, flyTo, drawMarkers, setUser } from "./map.js";
 
 // ---------------------------------------------------------------- state
@@ -9,10 +10,9 @@ const S = {
   park: store.get("park", null),
   parkPickedAt: store.get("parkPickedAt", 0),
   day: null,
-  riders: store.get("riders", [
-    { name: "Youngest", height: 51.5 },
-    { name: "Twins", height: 54.5 },
-  ]),
+  riders: store.get("riders", null),
+  photos: store.get("bdayPhotos", {}),
+  wish: 0,
   rode: store.get("rode", {}),
   hunts: store.get("hunts", {}),
   bb: store.get("bb", {}),
@@ -38,18 +38,27 @@ boot();
 
 async function boot() {
   try {
-    const res = await fetch("data/app-data.json", { cache: "no-cache" });
-    S.data = await res.json();
+    const res = await fetch("data/app-data.enc.json", { cache: "no-cache" });
+    const blob = await res.json();
+    const key = await savedKey();
+    let data = null;
+    if (key) { try { data = await decryptWith(key, blob); } catch { forgetKey(); } }
+    if (!data) data = await askPassword(blob);
+    S.data = data;
+    document.body.classList.remove("locked");
   } catch (e) {
+    document.body.classList.remove("locked");
     $("#view").innerHTML = `<div class="empty"><h2>Couldn't load the trip data</h2><p>Check your connection and reload. Once it loads once, it works offline.</p></div>`;
     return;
   }
   const D = S.data;
+  if (!S.riders) S.riders = D.riders || [];
   D.byKey = Object.fromEntries(D.attractions.map((a) => [a.key, a]));
   D.food.forEach((f) => { f.key = slug(`${f.park} ${f.location} ${f.item}`); });
   D.shows.forEach((s, i) => { s.key = `show-${i}`; });
 
   const now = orlandoNow();
+  S.wish = Math.floor(Math.random() * 50);
   const planDays = D.plan.days.map((d) => d.date);
   S.day = planDays.includes(now.date) ? now.date : (store.get("day", null) || "2026-10-15");
   if (!S.park || (planDays.includes(now.date) && Date.now() - S.parkPickedAt > 3 * 3600e3)) S.park = parkForNow();
@@ -286,19 +295,88 @@ function showsSoon(code, withinMin = 120) {
 
 function normName(s) { return String(s).toLowerCase().replace(/[^a-z0-9]/g, ""); }
 
+// ---------------------------------------------------------------- BIRTHDAY
+function birthdayCard(isTheDay) {
+  const B = S.data.birthday;
+  const msgs = B.messages || [];
+  const msg = msgs.length ? msgs[S.wish % msgs.length] : "";
+  const photos = (B.photos || []).map((p, i) => `<li><button type="button" class="photo-chk${S.photos[i] ? " photo-on" : ""}" data-photo="${i}" aria-pressed="${!!S.photos[i]}">${icon("check")}<span>${esc(p)}</span></button></li>`).join("");
+  const got = (B.photos || []).filter((_, i) => S.photos[i]).length;
+  return `<section class="bday" aria-label="Birthday">
+    <div class="bday-top">
+      <span class="bday-cake" aria-hidden="true">${icon("cake")}</span>
+      <div><p class="bday-kicker">${isTheDay ? "Today is the day" : "Friday, October 16"}</p><h2>${esc(B.headline)}</h2></div>
+    </div>
+    <p class="bday-msg" aria-live="polite">${esc(msg)}</p>
+    <button type="button" class="btn btn-bday" data-wish="1">Another birthday wish</button>
+    <details class="bday-more">
+      <summary>Birthday photo challenge <span class="count">${got} of ${(B.photos || []).length}</span></summary>
+      <ul class="photo-list">${photos}</ul>
+    </details>
+    <details class="bday-more">
+      <summary>Make it a birthday to remember</summary>
+      <ul class="plain">${(B.tips || []).map((t) => `<li>${esc(t)}</li>`).join("")}</ul>
+    </details>
+  </section>`;
+}
+
+function confetti(big = false) {
+  if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const c = document.createElement("canvas");
+  c.className = "confetti";
+  c.width = innerWidth * devicePixelRatio; c.height = innerHeight * devicePixelRatio;
+  document.body.append(c);
+  const ctx = c.getContext("2d");
+  const colors = ["#F5B700", "#FF5D8F", "#2C6BED", "#0B8F7C", "#7446DB", "#FF8A3D"];
+  const n = big ? 160 : 70;
+  const parts = Array.from({ length: n }, () => ({
+    x: (big ? Math.random() : 0.3 + Math.random() * 0.4) * c.width,
+    y: big ? -Math.random() * c.height * 0.4 : c.height * 0.35,
+    vx: (Math.random() - 0.5) * (big ? 4 : 14) * devicePixelRatio,
+    vy: (big ? 2 + Math.random() * 3 : -6 - Math.random() * 8) * devicePixelRatio,
+    s: (5 + Math.random() * 6) * devicePixelRatio, r: Math.random() * 6, vr: (Math.random() - 0.5) * 0.3,
+    col: colors[Math.floor(Math.random() * colors.length)],
+  }));
+  const start = performance.now();
+  (function frame(t) {
+    ctx.clearRect(0, 0, c.width, c.height);
+    for (const p of parts) {
+      p.vy += 0.25 * devicePixelRatio; p.x += p.vx; p.y += p.vy; p.r += p.vr; p.vx *= 0.99;
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.fillStyle = p.col;
+      ctx.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); ctx.restore();
+    }
+    if (t - start < 3200) requestAnimationFrame(frame); else c.remove();
+  })(start);
+}
+
+function birthdayBanner() {
+  const B = S.data.birthday;
+  if (!B || orlandoNow().date !== B.date) return "";
+  const msgs = B.messages || [];
+  return `<button type="button" class="bday-banner" data-day="${B.date}" data-goto="today">${icon("cake")}<span><b>${esc(B.headline)}</b> ${esc(msgs[S.wish % msgs.length] || "")}</span></button>`;
+}
+
 // ---------------------------------------------------------------- TODAY
 function renderToday() {
   const D = S.data;
   const now = orlandoNow();
   const day = D.plan.days.find((d) => d.date === S.day) || D.plan.days[1];
   const isToday = day.date === now.date;
+  const B = D.birthday;
+  const isBday = !!(B && day.date === B.date);
+  document.documentElement.dataset.bday = isBday ? "1" : "";
+  if (isBday && now.date === B.date && !store.get(`confetti:${B.date}`, false)) {
+    store.set(`confetti:${B.date}`, true);
+    setTimeout(() => confetti(true), 400);
+  }
   let currentIdx = -1;
   if (isToday) day.steps.forEach((s, i) => { if (toMinutes(s.time) <= now.minutes) currentIdx = i; });
 
   const chips = D.plan.days.map((d) => {
     const dt = new Date(`${d.date}T12:00:00`);
     const label = `${d.label} ${dt.getDate()}`;
-    return `<button type="button" class="chip${d.date === day.date ? " chip-on" : ""}" data-day="${d.date}" aria-pressed="${d.date === day.date}">${esc(label)}${d.date === now.date ? '<span class="chip-dot" aria-label="today"></span>' : ""}</button>`;
+    const cake = D.birthday && d.date === D.birthday.date ? `<span class="chip-cake" aria-label="birthday">${icon("cake")}</span>` : "";
+    return `<button type="button" class="chip${d.date === day.date ? " chip-on" : ""}" data-day="${d.date}" aria-pressed="${d.date === day.date}">${esc(label)}${cake}${d.date === now.date ? '<span class="chip-dot" aria-label="today"></span>' : ""}</button>`;
   }).join("");
 
   const hours = day.parks.map((code) => {
@@ -325,7 +403,9 @@ function renderToday() {
         <h3>${esc(s.title)}</h3>
         <p>${esc(s.detail)}</p>
         ${tlist ? `<ul class="targets">${tlist}</ul>` : ""}
-        ${first ? `<div class="step-actions"><button type="button" class="btn btn-quiet" data-mapto="${first.key}">${icon("map")} Show on map</button><a class="btn btn-quiet" href="${directionsLinks(first.lat, first.lng, first.name)[isApple ? "apple" : "google"]}" target="_blank" rel="noopener">${icon("walk")} Walk there</a></div>` : ""}
+        ${s.birthday && isBday ? `<p class="bday-note">${icon("cake")} ${esc(s.birthday)}</p>` : ""}
+        ${first ? `<div class="step-actions"><button type="button" class="btn btn-quiet" data-mapto="${first.key}">${icon("map")} Show on map</button><a class="btn btn-quiet" href="${directionsLinks(first.lat, first.lng, first.name)[isApple ? "apple" : "google"]}" target="_blank" rel="noopener">${icon("walk")} Walk there</a></div>`
+          : s.query ? `<div class="step-actions"><a class="btn btn-quiet" href="${queryLinks(s.query)[isApple ? "apple" : "google"]}" target="_blank" rel="noopener">${icon("walk")} Directions</a></div>` : ""}
       </div>
     </li>`;
   }).join("");
@@ -335,6 +415,7 @@ function renderToday() {
   $("#view").innerHTML = `
     <section class="today">
       <div class="chips" role="group" aria-label="Trip day">${chips}</div>
+      ${isBday ? birthdayCard(now.date === B.date) : ""}
       <header class="day-head">
         <h1>${esc(day.title)}</h1>
         <p>${esc(day.summary)}</p>
@@ -414,6 +495,7 @@ function renderNow() {
 
   $("#view").innerHTML = `
     <section class="now">
+      ${birthdayBanner()}
       ${closedBanner}
       ${geoBanner}
       <section class="block">
@@ -508,20 +590,31 @@ function renderEat() {
   const sect = (title, list, note = "") => list.length ? `<section class="block"><h2>${esc(title)}</h2>${note ? `<p class="fine">${esc(note)}</p>` : ""}<ul class="foods">${list.map((f) => foodRow(f, false)).join("")}</ul></section>` : "";
 
   const by = (sectionStart) => D.food.filter((f) => (f.section || "").startsWith(sectionStart) && inPark(f));
-  const tables = D.food.filter((f) => f.category === "table-service" && inPark(f) && !/SKIP/i.test(f.item || ""));
-  const res = D.plan.reservations.filter((r) => code === "ALL" || r.park === code);
+  const DN = D.dining || { picks: [], alternates: [] };
+  const dayName = (d) => new Date(`${d}T12:00:00`).toLocaleDateString("en-US", { weekday: "short" });
+  const today = orlandoNow().date;
+  const picksHtml = DN.picks.map((d, i) => `<li class="meal${d.date === today ? " meal-today" : ""}${S.data.birthday && d.date === S.data.birthday.date && d.meal.includes("Birthday") ? " meal-bday" : ""}">
+      <button type="button" class="meal-main" data-dining="pick-${i}">
+        <span class="meal-when"><b>${esc(dayName(d.date))}</b><span>${esc(d.meal)}</span></span>
+        <span class="meal-body"><b>${esc(d.name)}</b><span>${esc(d.area)}. ${esc(d.type)}</span>${/reserv|Resy|call/i.test(d.booking) && !/^No reservations/i.test(d.booking) ? '<span class="tag tag-warn">Book ahead</span>' : ""}</span>
+      </button></li>`).join("");
+  const alts = DN.alternates.map((d, i) => ({ d, i })).filter(({ d }) => code === "ALL" || d.park === code || (d.park == null && code === "USF"));
 
   $("#view").innerHTML = `
     <section class="eat">
+      <section class="block">
+        <h2>Our meals</h2>
+        <p class="fine">Tap a meal for menu highlights, prices and how to book.</p>
+        <ul class="meals">${picksHtml}</ul>
+      </section>
       <div class="seg seg-park" role="group" aria-label="Park">${parkTabs}</div>
       <section class="block passport">
         <div class="block-head"><h2>Butterbeer passport</h2><span class="count">${bbDone} of ${bb.length} tried</span></div>
         <div class="meter" role="img" aria-label="${bbDone} of ${bb.length} tried"><span style="width:${Math.round((bbDone / bb.length) * 100)}%"></span></div>
-        <p class="fine">Every Butterbeer form in the resort, with where to find it. Tap the check when Grandpa tries one.</p>
+        <p class="fine">Every Butterbeer form in the resort, with where to find it. Tap the check each time one gets tried.</p>
         <ul class="foods">${bbList.map((f) => foodRow(f, true)).join("") || '<li class="muted">No Butterbeer in this park. Switch parks above.</li>'}</ul>
       </section>
-      ${res.length ? `<section class="block"><h2>Your reservations</h2><ul class="plain">${res.map((r) => `<li><b>${esc(new Date(`${r.date}T12:00:00`).toLocaleDateString("en-US", { weekday: "short" }))} ${fmtTime(r.time)}: ${esc(r.place)}</b> ${esc(r.note)}</li>`).join("")}</ul></section>` : ""}
-      ${sect("Sit-down meals", tables)}
+      ${alts.length ? `<section class="block"><h2>Other casual options${code === "USF" ? " (Studios and CityWalk)" : ""}</h2><ul class="foods">${alts.map(({ d, i }) => `<li class="food"><button type="button" class="food-main" data-dining="alt-${i}"><b>${esc(d.name)}</b><span>${esc(d.area)}. ${esc(d.highlights.slice(0, 3).join(", "))}${d.price ? ` <em>${esc(d.price)}</em>` : ""}</span></button></li>`).join("")}</ul></section>` : ""}
       ${sect("Churros", by("Churros"))}
       ${sect("Dole Whip and pineapple soft-serve", by("Dole Whip"))}
       ${sect("Macarons", by("Macarons"))}
@@ -586,7 +679,10 @@ function onViewClick(e) {
   const t = e.target.closest("button, a");
   if (!t) return;
   const ds = t.dataset;
-  if (ds.day) { S.day = ds.day; store.set("day", S.day); renderToday(); return; }
+  if (ds.day) { S.day = ds.day; store.set("day", S.day); if (ds.goto) go(ds.goto); else renderToday(); return; }
+  if (ds.wish) { S.wish += 1; renderToday(); confetti(false); return; }
+  if (ds.photo != null) { const i = ds.photo; S.photos[i] = !S.photos[i]; if (!S.photos[i]) delete S.photos[i]; store.set("bdayPhotos", S.photos); renderToday(); const d = document.querySelector(".bday-more"); if (d) d.open = true; if (S.photos[i]) confetti(false); return; }
+  if (ds.dining) { const d = diningItem(ds.dining); if (d) openSheet({ type: "dining", item: d }); return; }
   if (ds.open) { const a = S.data.byKey[ds.open]; if (a) openSheet({ type: "ride", item: a }); return; }
   if (ds.done) { toggleDone(ds.done); return; }
   if (ds.filter) { S.filters[ds.filter] = !S.filters[ds.filter]; store.set("filters", S.filters); renderNow(); return; }
@@ -627,14 +723,20 @@ function closeSheet() {
   setTimeout(() => { if (!S.sheet) $("#sheetWrap").hidden = true; }, 200);
 }
 
+function diningItem(key) {
+  const [kind, i] = key.split("-");
+  const DN = S.data.dining;
+  return DN && (kind === "pick" ? DN.picks : DN.alternates)[Number(i)];
+}
+
 function walkButtons(item, label) {
-  if (item.lat == null) return "";
-  const d = directionsLinks(item.lat, item.lng, label);
+  if (item.lat == null && !item.query) return "";
+  const d = item.query ? queryLinks(item.query) : directionsLinks(item.lat, item.lng, label);
   const walk = walkFrom(item);
   return `<div class="sheet-actions">
     <a class="btn" href="${isApple ? d.apple : d.google}" target="_blank" rel="noopener">${icon("walk")} Walk there${walk != null ? ` (${walk} min)` : ""}</a>
     <a class="btn btn-quiet" href="${isApple ? d.google : d.apple}" target="_blank" rel="noopener">${isApple ? "Google Maps" : "Apple Maps"}</a>
-    ${S.view !== "map" ? `<button type="button" class="btn btn-quiet" data-sheet-map="1">${icon("map")} Show on map</button>` : ""}
+    ${S.view !== "map" && item.lat != null ? `<button type="button" class="btn btn-quiet" data-sheet-map="1">${icon("map")} Show on map</button>` : ""}
   </div>`;
 }
 
@@ -676,6 +778,19 @@ function renderSheet() {
       ${a.kidNote ? `<p><b>For the kids:</b> ${esc(a.kidNote)}</p>` : ""}
       ${a.tip ? `<p><b>Tip:</b> ${esc(a.tip)}</p>` : ""}
       ${walkButtons(a, a.name)}`;
+  } else if (sel.type === "dining") {
+    const d = sel.item;
+    const when = d.date ? `${new Date(`${d.date}T12:00:00`).toLocaleDateString("en-US", { weekday: "long" })} ${d.meal.toLowerCase()}${d.time ? `, ${fmtTime(d.time)}` : ""}` : "";
+    el.innerHTML = `
+      <div class="sheet-head"><div><h2 id="sheetTitle">${esc(d.name)}</h2><p class="muted">${esc(d.area)}. ${esc(d.type)}</p>${when ? `<p class="sheet-status">${esc(when)}</p>` : ""}</div><button type="button" class="icon-btn close" data-close="1" aria-label="Close">×</button></div>
+      <ul class="facts">${(d.highlights || []).map((x) => `<li>${esc(x)}</li>`).join("")}</ul>
+      ${d.price ? `<p><b>Price:</b> ${esc(d.price)}</p>` : ""}
+      ${d.kids ? `<p><b>Kids:</b> ${esc(d.kids)}</p>` : ""}
+      ${d.booking ? `<p><b>Booking:</b> ${esc(d.booking)}</p>` : ""}
+      ${d.birthday ? `<div class="callout callout-bday">${icon("cake")} <span>${esc(d.birthday)}</span></div>` : ""}
+      ${d.note ? `<p>${esc(d.note)}</p>` : ""}
+      ${d.backup ? `<div class="callout"><b>Backup:</b> ${esc(d.backup)}</div>` : ""}
+      ${walkButtons(d, d.name)}`;
   } else if (sel.type === "food") {
     const f = sel.item;
     el.innerHTML = `
@@ -699,6 +814,11 @@ function renderSheet() {
   }
 }
 
+function queryLinks(q) {
+  const e = encodeURIComponent(q);
+  return { apple: `https://maps.apple.com/?daddr=${e}&dirflg=w`, google: `https://www.google.com/maps/dir/?api=1&destination=${e}&travelmode=walking` };
+}
+
 function renderSettings(el) {
   const L = Object.entries(S.data.parks).map(([c, p]) => {
     const s = live(c);
@@ -712,6 +832,11 @@ function renderSettings(el) {
       <p class="fine">Heights in inches with shoes. The app flags rides anyone here is too short for. Saved on this phone only.</p>
       <ul class="riders">${S.riders.map((r, i) => `<li><label class="sr" for="rn${i}">Name</label><input id="rn${i}" data-rider-name="${i}" value="${esc(r.name)}" maxlength="24"><label class="sr" for="rh${i}">Height</label><input id="rh${i}" data-rider-height="${i}" type="number" inputmode="decimal" step="0.5" min="30" max="80" value="${esc(r.height)}"><span>in</span><button type="button" class="icon-btn" data-rider-del="${i}" aria-label="Remove ${esc(r.name)}">×</button></li>`).join("")}</ul>
       <button type="button" class="btn btn-quiet" data-rider-add="1">Add a rider</button>
+    </section>
+    <section class="block">
+      <h3>Password</h3>
+      <p class="fine">This phone stays unlocked. Lock it if you hand the phone to someone outside the family.</p>
+      <button type="button" class="btn btn-quiet" data-lock="1">Lock this phone</button>
     </section>
     <section class="block">
       <h3>Progress on this phone</h3>
@@ -747,6 +872,7 @@ function onSheetClick(e) {
   if (ds.riderDel) { S.riders.splice(Number(ds.riderDel), 1); store.set("riders", S.riders); renderSheet(); renderView(); return; }
   if (ds.reset) { S.confirm = "reset"; renderSheet(); return; }
   if (ds.resetNo) { S.confirm = null; renderSheet(); return; }
+  if (ds.lock) { forgetKey(); location.reload(); return; }
   if (ds.resetYes) {
     S.rode = {}; S.hunts = {}; S.bb = {};
     store.set("rode", {}); store.set("hunts", {}); store.set("bb", {});

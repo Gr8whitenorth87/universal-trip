@@ -19,7 +19,19 @@
 <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
 <link rel="stylesheet" href="css/app.css">
 </head>
-<body data-view="today">
+<body data-view="today" class="locked">
+<section id="lock" class="lock" hidden>
+  <form id="lockForm" class="lock-card" autocomplete="on">
+    <span class="lock-mark" aria-hidden="true"></span>
+    <h1>Universal Trip</h1>
+    <p>Enter the family password to open the plan.</p>
+    <label class="sr" for="lockPw">Password</label>
+    <input id="lockPw" name="password" type="password" autocomplete="current-password" autocapitalize="none" spellcheck="false" placeholder="Password" required>
+    <button type="submit" class="btn">Unlock</button>
+    <p id="lockMsg" class="lock-msg" role="status" aria-live="polite"></p>
+    <p class="fine">You only need to do this once on each phone.</p>
+  </form>
+</section>
 <header class="top">
   <div class="top-row">
     <div class="brand" aria-label="Universal Trip"><span class="brand-mark" aria-hidden="true"></span><span>Universal Trip</span></div>
