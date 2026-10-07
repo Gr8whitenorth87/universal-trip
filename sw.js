@@ -1,6 +1,6 @@
 // Offline support: the app shell and trip data are cached so the plan, food and hunts work
 // with no signal. Map tiles are kept as you view them. Live waits always go to the network.
-const VERSION = "ut26-v2";
+const VERSION = "ut26-v3";
 const SHELL = [
   "./",
   "index.html",
@@ -49,7 +49,8 @@ self.addEventListener("fetch", (e) => {
   e.respondWith(
     caches.open(VERSION).then(async (cache) => {
       const cached = await cache.match(e.request, { ignoreSearch: true });
-      const fresh = fetch(e.request).then((res) => {
+      // no-cache: revalidate with GitHub Pages so fixes show up on the next open, not 10 minutes later
+      const fresh = fetch(e.request, { cache: "no-cache" }).then((res) => {
         if (res.ok) cache.put(e.request, res.clone());
         return res;
       }).catch(() => null);
