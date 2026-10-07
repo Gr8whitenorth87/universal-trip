@@ -331,3 +331,5 @@ body[data-view="map"] { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .sheet, .sheet-backdrop { transition: none; }
 }
+.banner-closed { background: var(--surface-2); }
+.map-tools .chip { padding: 6px 12px; font-size: .9rem; min-height: 38px; }

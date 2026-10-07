@@ -1,5 +1,5 @@
 import { orlandoNow, toMinutes, fmtTime, ago, walkMinutes, meters, directionsLinks, isApple, store, icon } from "./util.js";
-import { initLive, setFocusPark, onLive, live, liveFor, refresh } from "./live.js";
+import { initLive, setFocusPark, onLive, live, liveFor, refresh, scheduleFor } from "./live.js";
 import { initMap, mapReady, invalidate, showLayer, fitPark, flyTo, drawMarkers, setUser } from "./map.js";
 
 // ---------------------------------------------------------------- state
@@ -56,7 +56,7 @@ async function boot() {
   S.eatPark = S.park;
   S.explorePark = S.park;
 
-  initLive(D.parks);
+  initLive(D.parks, now.date);
   setFocusPark(S.park);
   onLive(() => { renderHeader(); if (["now", "today", "map"].includes(S.view)) renderView(); if (S.sheet) renderSheet(); });
 
@@ -143,7 +143,7 @@ function renderHeader() {
   for (const b of document.querySelectorAll(".park-btn")) b.setAttribute("aria-pressed", b.dataset.park === S.park ? "true" : "false");
   const L = live(S.park);
   const now = orlandoNow();
-  const hrs = p.hours[now.date];
+  const hrs = parkHours(S.park, now.date);
   let status = "";
   if (L && L.loading && !L.fetchedAt) status = "Loading wait times…";
   else if (L && L.fetchedAt) {
@@ -170,6 +170,22 @@ function cantRide(a) {
   if (!a.minHeight) return [];
   return S.riders.filter((r) => Number(r.height) < a.minHeight).map((r) => r.name);
 }
+// Park hours for a date: the live schedule when we have it, otherwise the researched hours.
+function parkHours(code, date) {
+  return scheduleFor(code, date) || S.data.parks[code].hours[date] || null;
+}
+
+function parkState(code) {
+  const now = orlandoNow();
+  const h = parkHours(code, now.date);
+  if (!h || !h.open) return { open: true, label: "" }; // unknown hours: trust the live feed
+  const start = toMinutes(h.early || h.open), end = toMinutes(h.close);
+  const name = S.data.parks[code].short;
+  if (now.minutes < start) return { open: false, label: `${name} opens at ${fmtTime(h.early || h.open)}${h.early ? " (early entry)" : ""}`, opensAt: h.early || h.open };
+  if (now.minutes >= end) return { open: false, label: `${name} closed at ${fmtTime(h.close)}` };
+  return { open: true, label: "", closesAt: h.close };
+}
+
 function isIntense(a) { return (a.thrill || 0) >= 4 || (a.scary || 0) >= 3; }
 function rodeCount(a) { return S.rode[a.key] || 0; }
 
@@ -186,6 +202,8 @@ function waitInfo(a) {
   const L = liveFor(a);
   const isRide = RIDE_KINDS.has(a.kind);
   if (a.status === "closed") return { tone: "closed", short: "Closed", label: "Closed on your dates", open: false };
+  const ps = parkState(a.park);
+  if (!ps.open && a.kind !== "show") return { tone: "closed", short: "Closed", label: ps.label, open: false, parkClosed: true };
   if (L) {
     if (L.status === "DOWN") return { tone: "down", short: "Down", label: "Temporarily down", open: false, live: L };
     if (L.status === "CLOSED" || L.status === "REFURBISHMENT") return { tone: "closed", short: "Closed", label: L.status === "REFURBISHMENT" ? "Closed for refurbishment" : "Closed right now", open: false, live: L };
@@ -284,7 +302,7 @@ function renderToday() {
   }).join("");
 
   const hours = day.parks.map((code) => {
-    const p = D.parks[code], hr = p.hours[day.date];
+    const p = D.parks[code], hr = parkHours(code, day.date);
     if (!hr) return "";
     return `<div class="hours hours-${code}"><b>${esc(p.short)}</b><span>${hr.early ? `Early entry ${fmtTime(hr.early)}<br>` : ""}${fmtTime(hr.open)}–${fmtTime(hr.close)}</span></div>`;
   }).join("");
@@ -338,6 +356,8 @@ function renderNow() {
   const sug = suggestions(code);
   const soon = showsSoon(code);
 
+  const ps = parkState(code);
+  const closedBanner = !ps.open ? `<div class="banner banner-closed"><p><b>${esc(ps.label)}.</b> Suggestions start when the park opens. The plan for the day is on the Today tab.</p></div>` : "";
   const geoBanner = !S.pos ? `<div class="banner"><p>Turn on location to sort by walking distance and see how far each ride is.</p><button type="button" class="btn" data-action="geo">${icon("locate")} Use my location</button></div>` : "";
 
   const sugHtml = sug.length ? sug.map((s) => `
@@ -345,7 +365,7 @@ function renderNow() {
       ${board(s.a, "board-lg")}
       <span class="move-body"><b>${esc(s.a.name)}</b><span class="move-why">${esc(s.why.slice(0, 3).join(". "))}</span>
       ${s.blocked.length ? `<span class="note-warn">${esc(s.blocked.join(", "))} too short${s.a.alternatives ? `: ${esc(s.a.alternatives[0].name)} nearby` : ""}</span>` : ""}</span>
-    </button></li>`).join("") : `<li class="muted">Nothing to suggest right now. The park may be closed; try another park above.</li>`;
+    </button></li>`).join("") : `<li class="muted">${ps.open ? "Nothing to suggest right now. Try another park above." : "Nothing to suggest until the park opens."}</li>`;
 
   const soonHtml = soon.length ? `<section class="block"><h2>Shows starting soon</h2><ul class="soon">${soon.map((x) => `<li><button type="button" class="soon-row" data-open="${x.a.key}"><span class="soon-time">${esc(fmtTime(x.next))}</span><span>${esc(x.a.name)}${x.estimate ? ' <em class="note-soft">estimated time</em>' : ""}</span></button></li>`).join("")}</ul></section>` : "";
 
@@ -390,10 +410,11 @@ function renderNow() {
     listHtml = `<ul class="rides">${rides.slice().sort((x, y) => val(x) - val(y)).map(row).join("")}</ul>`;
   }
 
-  const closed = D.attractions.filter((a) => a.park === code && (a.status === "closed" || ["DOWN"].includes(liveFor(a)?.status)) && a.kind !== "show");
+  const closed = !ps.open ? [] : D.attractions.filter((a) => a.park === code && (a.status === "closed" || ["DOWN"].includes(liveFor(a)?.status)) && a.kind !== "show");
 
   $("#view").innerHTML = `
     <section class="now">
+      ${closedBanner}
       ${geoBanner}
       <section class="block">
         <div class="block-head"><h2>Best moves right now</h2><button type="button" class="icon-btn" data-action="refresh" aria-label="Refresh wait times">${icon("refresh")}</button></div>

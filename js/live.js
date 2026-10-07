@@ -14,8 +14,36 @@ let parks = {};
 let focusCode = null;
 let timer = null;
 
-export function initLive(parkMeta) {
+// ---------- park hours (ThemeParks.wiki schedule, fetched once a day) ----------
+const SCHED = (id) => `https://api.themeparks.wiki/v1/entity/${id}/schedule`;
+let sched = store.get("sched", {});
+
+export function scheduleFor(code, date) {
+  const s = sched[code];
+  return s && s.days ? s.days[date] || null : null;
+}
+
+async function refreshSchedule(code, today) {
+  const meta = parks[code];
+  if (!meta || (sched[code] && sched[code].fetched === today)) return;
+  try {
+    const raw = await getJSON(SCHED(meta.id), 10000);
+    const days = {};
+    for (const e of raw.schedule || []) {
+      const d = (days[e.date] = days[e.date] || {});
+      const o = isoToOrlandoHHMM(e.openingTime), c = isoToOrlandoHHMM(e.closingTime);
+      if (e.type === "OPERATING") { d.open = o; d.close = c; }
+      else if (e.type === "EXTRA_HOURS") d.early = o;
+    }
+    sched[code] = { fetched: today, days };
+    store.set("sched", sched);
+    emit(code);
+  } catch { /* keep the researched hours */ }
+}
+
+export function initLive(parkMeta, today) {
   parks = parkMeta;
+  for (const code of Object.keys(parks)) refreshSchedule(code, today);
   for (const code of Object.keys(parks)) {
     const cached = store.get(`live:${code}`, null);
     if (cached) state[code] = { ...parse(cached.raw), fetchedAt: cached.fetchedAt, source: "saved" };
