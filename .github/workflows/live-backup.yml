@@ -1,0 +1,60 @@
+# Backup copy of live wait times. The app reads ThemeParks.wiki directly; if that ever fails
+# from a phone, it falls back to these files on the live-data branch (refreshed every ~10 min
+# during the trip, Oct 14-18, 7am-10pm Orlando time).
+name: Live wait backup
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: live-backup
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Only during the trip
+        id: gate
+        run: |
+          d=$(TZ=America/New_York date +%Y-%m-%d); h=$(TZ=America/New_York date +%H)
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then echo "run=yes" >> "$GITHUB_OUTPUT"; exit 0; fi
+          if [[ "$d" > "2026-10-13" && "$d" < "2026-10-19" && 10#$h -ge 7 && 10#$h -le 22 ]]; then echo "run=yes" >> "$GITHUB_OUTPUT"; else echo "run=no" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Check out the live-data branch
+        if: steps.gate.outputs.run == 'yes'
+        run: |
+          git init -q data && cd data
+          git remote add origin "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"
+          if git fetch -q --depth 1 origin live-data; then git checkout -q -b live-data FETCH_HEAD; else git checkout -q --orphan live-data; fi
+
+      - name: Fetch the three parks
+        if: steps.gate.outputs.run == 'yes'
+        run: |
+          cd data && mkdir -p live
+          now=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          for p in "USF eb3f4560-2383-4a36-9152-6b3e5ed6bc57" "IOA 267615cc-8943-4c2a-ae2c-5da728ca591f" "EPIC 12dbb85b-265f-44e6-bccf-f1faa17211fc"; do
+            set -- $p
+            if curl -fsS --max-time 20 "https://api.themeparks.wiki/v1/entity/$2/live" -o "/tmp/$1.json"; then
+              jq --arg t "$now" '. + {fetchedAt: $t}' "/tmp/$1.json" > "live/$1.json"
+            fi
+          done
+          ls -la live
+
+      - name: Commit
+        if: steps.gate.outputs.run == 'yes'
+        run: |
+          cd data
+          git config user.name "live-backup"
+          git config user.email "live-backup@users.noreply.github.com"
+          # Keep a single commit on this branch so it never grows.
+          git checkout -q --orphan snapshot
+          git add -A
+          git commit -q -m "Live waits $(date -u +%Y-%m-%d\ %H:%M)Z"
+          git push -q -f origin snapshot:live-data

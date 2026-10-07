@@ -1,0 +1,15 @@
+{
+  "name": "Universal Trip",
+  "short_name": "Universal Trip",
+  "description": "Our Universal Orlando plan with live wait times, a park map, food and things for the kids to find.",
+  "start_url": "./#today",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#10233F",
+  "theme_color": "#10233F",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

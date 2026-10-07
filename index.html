@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Universal Trip</title>
+<meta name="description" content="Our three-day Universal Orlando plan with live wait times, a park map, food and things for the kids to find.">
+<meta name="theme-color" content="#10233F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Universal Trip">
+<meta name="robots" content="noindex">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preload" href="fonts/atkinson-hyperlegible-next-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/big-shoulders-display-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body data-view="today">
+<header class="top">
+  <div class="top-row">
+    <div class="brand" aria-label="Universal Trip"><span class="brand-mark" aria-hidden="true"></span><span>Universal Trip</span></div>
+    <div class="park-switch" id="parkSwitch" role="group" aria-label="Park"></div>
+    <button type="button" class="icon-btn" id="settingsBtn" aria-label="Settings"></button>
+  </div>
+  <p class="status" id="status" aria-live="polite"></p>
+</header>
+
+<main id="view" tabindex="-1"></main>
+
+<div id="mapWrap" class="map-wrap" hidden>
+  <div id="mapEl" class="map" role="region" aria-label="Park map"></div>
+  <div id="mapTools" class="map-tools"></div>
+</div>
+
+<nav class="tabs" id="tabs" aria-label="Sections">
+  <button type="button" data-view="today" data-icon="today" aria-current="page"><span>Today</span></button>
+  <button type="button" data-view="now" data-icon="now"><span>Now</span></button>
+  <button type="button" data-view="map" data-icon="map"><span>Map</span></button>
+  <button type="button" data-view="eat" data-icon="eat"><span>Eat</span></button>
+  <button type="button" data-view="explore" data-icon="explore"><span>Explore</span></button>
+</nav>
+
+<div id="sheetWrap" class="sheet-wrap" hidden>
+  <div id="sheetBackdrop" class="sheet-backdrop"></div>
+  <div id="sheet" class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" tabindex="-1"></div>
+</div>
+
+<div id="toast" class="toast" role="status" hidden></div>
+
+<script src="vendor/leaflet/leaflet.js"></script>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
