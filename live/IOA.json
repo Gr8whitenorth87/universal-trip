@@ -1,0 +1,406 @@
+{
+  "id": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+  "name": "Universal Islands of Adventure",
+  "entityType": "PARK",
+  "timezone": "America/New_York",
+  "liveData": [
+    {
+      "id": "144450b9-4574-46be-abdf-4b1ca8974d9d",
+      "name": "Hogwarts Express™ - Hogsmeade™ Station",
+      "entityType": "ATTRACTION",
+      "parkId": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+      "externalId": "uor.ioa.rides.hogwarts_express_-_hogsmeade_station",
+      "queue": {
+        "STANDBY": {
+          "waitTime": 35
+        }
+      },
+      "status": "OPERATING",
+      "lastUpdated": "2026-10-07T01:33:46.751Z"
+    },
+    {
+      "id": "22dcd29e-d76a-45cd-b44a-dd6350dc3f8a",
+      "name": "Jurassic Park Discovery Center",
+      "entityType": "ATTRACTION",
+      "parkId": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+      "externalId": "uor.ioa.rides.jurassic_park_discovery_center",
+      "status": "CLOSED",
+      "lastUpdated": "2026-04-20T09:27:47.865Z"
+    },
+    {
+      "id": "2365495a-790b-4a41-831e-65592c8a4359",
+      "name": "The Cat in The Hat™",
+      "entityType": "ATTRACTION",
+      "parkId": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+      "externalId": "uor.ioa.rides.the_cat_in_the_hat",
+      "queue": {
+        "STANDBY": {
+          "waitTime": 5
+        }
+      },
+      "status": "OPERATING",
+      "lastUpdated": "2026-10-07T02:45:58.376Z"
+    },
+    {
+      "id": "23b613e0-ae83-455b-9163-231bdbd5c427",
+      "name": "Flight of the Hippogriff™",
+      "entityType": "ATTRACTION",
+      "parkId": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+      "externalId": "uor.ioa.rides.flight_of_the_hippogriff",
+      "status": "DOWN",
+      "lastUpdated": "2026-10-07T02:45:58.306Z"
+    },
+    {
+      "id": "28f411b9-dacc-47b1-9596-bd1383ce730d",
+      "name": "Raptor Encounter",
+      "entityType": "SHOW",
+      "parkId": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+      "externalId": "uor.ioa.shows.raptor_encounter",
+      "status": "DOWN",
+      "showtimes": [
+        {
+          "type": "Performance Time",
+          "endTime": "2026-10-06T22:50:00-04:00",
+          "startTime": "2026-10-06T22:50:00-04:00"
+        },
+        {
+          "type": "Performance Time",
+          "endTime": "2026-10-06T23:10:00-04:00",
+          "startTime": "2026-10-06T23:10:00-04:00"
+        }
+      ],
+      "lastUpdated": "2026-10-07T02:45:58.401Z"
+    },
+    {
+      "id": "2f95b213-daaa-4370-8349-c2cd57be470e",
+      "name": "Doctor Doom's Fearfall®",
+      "entityType": "ATTRACTION",
+      "parkId": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+      "externalId": "uor.ioa.rides.doctor_dooms_fearfall",
+      "queue": {
+        "STANDBY": {
+          "waitTime": 10
+        }
+      },
+      "status": "OPERATING",
+      "lastUpdated": "2026-10-07T02:45:58.289Z"
+    },
+    {
+      "id": "370ba4d1-f199-4dc2-be6d-6bb09b442891",
+      "name": "Skull Island: Reign of Kong",
+      "entityType": "ATTRACTION",
+      "parkId": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+      "externalId": "uor.ioa.rides.skull_island_reign_of_kong",
+      "queue": {
+        "STANDBY": {
+          "waitTime": 5
+        }
+      },
+      "status": "OPERATING",
+      "lastUpdated": "2026-10-07T02:45:58.351Z"
+    },
+    {
+      "id": "391dea99-303d-42a1-aa86-a846d1c1fa1f",
+      "name": "If I Ran The Zoo™",
+      "entityType": "ATTRACTION",
+      "parkId": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+      "externalId": "uor.ioa.rides.if_i_ran_the_zoo",
+      "status": "CLOSED",
+      "lastUpdated": "2026-04-20T09:27:47.865Z"
+    },
+    {
+      "id": "3cb52134-e9d6-4212-83c8-3ce1321dcb05",
+      "name": "Caro-Seuss-el™",
+      "entityType": "ATTRACTION",
+      "parkId": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+      "externalId": "uor.ioa.rides.caro-seuss-el",
+      "queue": {
+        "STANDBY": {
+          "waitTime": 5
+        }
+      },
+      "status": "OPERATING",
+      "lastUpdated": "2026-10-07T02:45:58.280Z"
+    },
+    {
+      "id": "3daca54f-50f0-44e9-a993-d706ce7520a0",
+      "name": "Pteranodon Flyers",
+      "entityType": "ATTRACTION",
+      "parkId": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+      "externalId": "uor.ioa.rides.pteranodon_flyers",
+      "status": "DOWN",
+      "lastUpdated": "2026-10-07T02:45:58.344Z"
+    },
+    {
+      "id": "578bbd12-1975-4ec3-9879-ea641c780342",
+      "name": "Hagrid's Magical Creatures Motorbike Adventure™",
+      "entityType": "ATTRACTION",
+      "parkId": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+      "externalId": "uor.ioa.rides.hagrids_magical_motorcycle_adventure",
+      "queue": {
+        "STANDBY": {
+          "waitTime": 10
+        }
+      },
+      "status": "OPERATING",
+      "lastUpdated": "2026-10-07T01:40:17.509Z"
+    },
+    {
+      "id": "61079a31-4165-4fb0-b36f-c01c5971f80a",
+      "name": "Jurassic World VelociCoaster",
+      "entityType": "ATTRACTION",
+      "parkId": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+      "externalId": "uor.ioa.rides.jurassic_world_velocicoaster",
+      "queue": {
+        "STANDBY": {
+          "waitTime": 5
+        },
+        "PAID_STANDBY": {
+          "waitTime": null
+        }
+      },
+      "status": "OPERATING",
+      "lastUpdated": "2026-10-07T01:55:15.932Z"
+    },
+    {
+      "id": "6af80308-647d-4d8b-bcf6-37517a93bdbc",
+      "name": "Harry Potter and the Forbidden Journey™",
+      "entityType": "ATTRACTION",
+      "parkId": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+      "externalId": "uor.ioa.rides.harry_potter_and_the_forbidden_journey",
+      "queue": {
+        "STANDBY": {
+          "waitTime": 10
+        },
+        "SINGLE_RIDER": {
+          "waitTime": null
+        }
+      },
+      "status": "OPERATING",
+      "lastUpdated": "2026-10-07T02:45:58.314Z"
+    },
+    {
+      "id": "6be23178-7d00-4884-9e88-76787da1df86",
+      "name": "The Amazing Adventures of Spider-Man®",
+      "entityType": "ATTRACTION",
+      "parkId": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+      "externalId": "uor.ioa.rides.the_amazing_adventures_of_spider_man",
+      "queue": {
+        "STANDBY": {
+          "waitTime": 25
+        },
+        "PAID_STANDBY": {
+          "waitTime": null
+        }
+      },
+      "status": "OPERATING",
+      "lastUpdated": "2026-10-07T02:45:58.367Z"
+    },
+    {
+      "id": "8babd50d-c570-423b-bd53-d040cad3e087",
+      "name": "Me Ship, The Olive®",
+      "entityType": "ATTRACTION",
+      "parkId": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+      "externalId": "uor.ioa.rides.me_ship_the_olive",
+      "status": "CLOSED",
+      "lastUpdated": "2026-04-20T09:27:47.865Z"
+    },
+    {
+      "id": "905d7888-b866-4e74-90d1-07fc6ef6706f",
+      "name": "Dudley Do-Right's Ripsaw Falls®",
+      "entityType": "ATTRACTION",
+      "parkId": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+      "externalId": "uor.ioa.rides.dudley_do_rights_ripsaw_falls",
+      "queue": {
+        "STANDBY": {
+          "waitTime": 15
+        }
+      },
+      "status": "OPERATING",
+      "lastUpdated": "2026-10-07T02:45:58.298Z"
+    },
+    {
+      "id": "97b25fe9-eb81-46bd-b57f-8b2fbbe85249",
+      "name": "Frog Choir",
+      "entityType": "SHOW",
+      "parkId": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+      "externalId": "uor.ioa.shows.frog_choir",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-06T21:02:14.993Z"
+    },
+    {
+      "id": "97ef82d2-ae34-41d8-8fc9-ac8f1979ef7d",
+      "name": "Dark Arts at Hogwarts™ Castle",
+      "entityType": "SHOW",
+      "parkId": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+      "externalId": "uor.ioa.shows.darkartsathogwartscastle",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-07T00:01:41.614Z"
+    },
+    {
+      "id": "9ad98d6a-e81a-4408-b5df-1ea832fe0b19",
+      "name": "Oh! The Stories You'll Hear!™",
+      "entityType": "SHOW",
+      "parkId": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+      "externalId": "uor.ioa.shows.oh_.the.stories.youll.hear_",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-06T21:19:04.682Z"
+    },
+    {
+      "id": "b1e94e05-b360-4e3f-be8a-2a3744a97f97",
+      "name": "One Fish, Two Fish, Red Fish, Blue Fish™",
+      "entityType": "ATTRACTION",
+      "parkId": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+      "externalId": "uor.ioa.rides.one_fish_two_fish_red_fish_blue_fish",
+      "queue": {
+        "STANDBY": {
+          "waitTime": 5
+        }
+      },
+      "status": "OPERATING",
+      "lastUpdated": "2026-10-07T02:45:58.329Z"
+    },
+    {
+      "id": "b4445a1c-4d5c-4fca-a04a-f8867f1b6619",
+      "name": "Popeye & Bluto's Bilge-Rat Barges®",
+      "entityType": "ATTRACTION",
+      "parkId": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+      "externalId": "uor.ioa.rides.popeye_blutos_bilge_rat_barges",
+      "queue": {
+        "STANDBY": {
+          "waitTime": 5
+        }
+      },
+      "status": "OPERATING",
+      "lastUpdated": "2026-10-07T02:45:58.337Z"
+    },
+    {
+      "id": "b694d5a5-155e-4796-af7e-5dbdcf3deba4",
+      "name": "Storm Force Accelatron®",
+      "entityType": "ATTRACTION",
+      "parkId": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+      "externalId": "uor.ioa.rides.storm_force_accelatron",
+      "queue": {
+        "STANDBY": {
+          "waitTime": 5
+        }
+      },
+      "status": "OPERATING",
+      "lastUpdated": "2026-10-07T02:45:58.359Z"
+    },
+    {
+      "id": "b73e3256-9ee0-439e-9a3b-ffed287e10bb",
+      "name": "The High in the Sky Seuss Trolley Train Ride!™",
+      "entityType": "ATTRACTION",
+      "parkId": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+      "externalId": "uor.ioa.rides.the_high_in_the_sky_seuss_trolley_train_ride_",
+      "queue": {
+        "STANDBY": {
+          "waitTime": 20
+        }
+      },
+      "status": "OPERATING",
+      "lastUpdated": "2026-10-07T02:45:58.385Z"
+    },
+    {
+      "id": "c6c26dd9-bb82-49de-9fca-9245be6a8081",
+      "name": "Meet Spider-Man and the Marvel® Super Heroes",
+      "entityType": "SHOW",
+      "parkId": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+      "externalId": "uor.ioa.shows.meet_spider_man_and_the_marvel_super_heroes",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-06T21:19:04.674Z"
+    },
+    {
+      "id": "cc2f2601-09d2-43b8-83ef-2a367b929761",
+      "name": "Triwizard Spirit Rally",
+      "entityType": "SHOW",
+      "parkId": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+      "externalId": "uor.ioa.shows.triwizard_spirit_rally",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-06T20:35:19.301Z"
+    },
+    {
+      "id": "d7310719-f158-4d92-a476-13202c7162cd",
+      "name": "Ollivanders™ Experience in Hogsmeade™",
+      "entityType": "SHOW",
+      "parkId": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+      "externalId": "uor.ioa.shows.ollivanders",
+      "queue": {
+        "STANDBY": {
+          "waitTime": 5
+        }
+      },
+      "status": "OPERATING",
+      "lastUpdated": "2026-10-07T01:36:45.680Z"
+    },
+    {
+      "id": "db5b2165-15c2-4e51-8bd1-611e9c351866",
+      "name": "Jurassic Park River Adventure",
+      "entityType": "ATTRACTION",
+      "parkId": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+      "externalId": "uor.ioa.rides.jurassic_park_river_adventure",
+      "queue": {
+        "STANDBY": {
+          "waitTime": 5
+        }
+      },
+      "status": "OPERATING",
+      "lastUpdated": "2026-10-07T02:45:58.322Z"
+    },
+    {
+      "id": "ea72aa9c-3d89-4593-9fe8-ff25c88289a8",
+      "name": "Classic Comic Book Characters",
+      "entityType": "SHOW",
+      "parkId": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+      "externalId": "uor.ioa.shows.classic_comic_book_characters",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-06T20:31:58.063Z"
+    },
+    {
+      "id": "f6d4294c-8825-4712-a891-36d45b5eb0f4",
+      "name": "Seuss Character Zone",
+      "entityType": "SHOW",
+      "parkId": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+      "externalId": "uor.ioa.shows.seuss_character_zone",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-06T20:46:46.514Z"
+    },
+    {
+      "id": "f6dba1c6-6f5a-4743-8470-f741ecac555d",
+      "name": "Camp Jurassic™",
+      "entityType": "ATTRACTION",
+      "parkId": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+      "externalId": "uor.ioa.rides.camp_jurassic",
+      "status": "CLOSED",
+      "lastUpdated": "2026-04-20T09:27:47.865Z"
+    },
+    {
+      "id": "fa63f462-74b4-4b1e-96fe-0b6e7e0b31c2",
+      "name": "Hogwarts™ Always",
+      "entityType": "SHOW",
+      "parkId": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+      "externalId": "uor.ioa.shows.hogwartsalways",
+      "status": "CLOSED",
+      "lastUpdated": "2026-09-05T01:04:48.952Z"
+    },
+    {
+      "id": "fa743143-281b-4b5b-b87b-d49fcb006772",
+      "name": "The Incredible Hulk Coaster®",
+      "entityType": "ATTRACTION",
+      "parkId": "267615cc-8943-4c2a-ae2c-5da728ca591f",
+      "externalId": "uor.ioa.rides.the_incredible_hulk_coaster",
+      "queue": {
+        "STANDBY": {
+          "waitTime": 5
+        },
+        "PAID_STANDBY": {
+          "waitTime": null
+        }
+      },
+      "status": "OPERATING",
+      "lastUpdated": "2026-10-07T02:45:58.394Z"
+    }
+  ],
+  "fetchedAt": "2026-10-07T03:09:35Z"
+}

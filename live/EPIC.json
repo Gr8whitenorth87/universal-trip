@@ -1,0 +1,290 @@
+{
+  "id": "12dbb85b-265f-44e6-bccf-f1faa17211fc",
+  "name": "Universal Epic Universe",
+  "entityType": "PARK",
+  "timezone": "America/New_York",
+  "liveData": [
+    {
+      "id": "00feb57b-4fcc-48bc-9490-c9af71f30c1c",
+      "name": "Yoshi's Adventure™",
+      "entityType": "ATTRACTION",
+      "parkId": "12dbb85b-265f-44e6-bccf-f1faa17211fc",
+      "externalId": "uor.ueu.rides.yoshis_adventure",
+      "queue": {
+        "PAID_STANDBY": {
+          "waitTime": null
+        }
+      },
+      "status": "CLOSED",
+      "operatingHours": [
+        {
+          "type": "OPERATING",
+          "endTime": null,
+          "startTime": "2026-10-07T13:00:00.000Z"
+        }
+      ],
+      "lastUpdated": "2026-10-07T00:59:32.309Z"
+    },
+    {
+      "id": "07143999-bacd-475f-a00b-8cc476204aff",
+      "name": "Constellation Carousel",
+      "entityType": "ATTRACTION",
+      "parkId": "12dbb85b-265f-44e6-bccf-f1faa17211fc",
+      "externalId": "uor.ueu.rides.constellation_carousel",
+      "queue": {
+        "PAID_STANDBY": {
+          "waitTime": null
+        }
+      },
+      "status": "CLOSED",
+      "operatingHours": [
+        {
+          "type": "OPERATING",
+          "endTime": null,
+          "startTime": "2026-10-07T14:00:00.000Z"
+        }
+      ],
+      "lastUpdated": "2026-10-07T00:59:32.222Z"
+    },
+    {
+      "id": "0c6a9af8-c006-4849-8475-1a6925e8f7d4",
+      "name": "Bowser Jr. Challenge",
+      "entityType": "ATTRACTION",
+      "parkId": "12dbb85b-265f-44e6-bccf-f1faa17211fc",
+      "externalId": "uor.ueu.rides.bowse_jr_challenge",
+      "status": "CLOSED",
+      "operatingHours": [
+        {
+          "type": "OPERATING",
+          "endTime": null,
+          "startTime": "2026-10-07T13:00:00.000Z"
+        }
+      ],
+      "lastUpdated": "2026-10-07T00:59:32.211Z"
+    },
+    {
+      "id": "1fda5e1f-8712-4165-a81d-ad74eef3e8ee",
+      "name": "Monsters Unchained: The Frankenstein Experiment",
+      "entityType": "ATTRACTION",
+      "parkId": "12dbb85b-265f-44e6-bccf-f1faa17211fc",
+      "externalId": "uor.ueu.rides.monsters_unchained_the_frankenstein_experiment",
+      "status": "CLOSED",
+      "operatingHours": [
+        {
+          "type": "OPERATING",
+          "endTime": null,
+          "startTime": "2026-10-07T14:00:00.000Z"
+        }
+      ],
+      "lastUpdated": "2026-10-07T00:59:32.292Z"
+    },
+    {
+      "id": "281bc9e6-b208-4a70-85d2-0fb749c7658b",
+      "name": "Fyre Drill",
+      "entityType": "ATTRACTION",
+      "parkId": "12dbb85b-265f-44e6-bccf-f1faa17211fc",
+      "externalId": "uor.ueu.rides.fyre_drill",
+      "status": "CLOSED",
+      "operatingHours": [
+        {
+          "type": "OPERATING",
+          "endTime": null,
+          "startTime": "2026-10-07T14:00:00.000Z"
+        }
+      ],
+      "lastUpdated": "2026-10-07T00:59:32.248Z"
+    },
+    {
+      "id": "43df71bf-aa7c-46c0-925c-46f69d8bf23f",
+      "name": "Mario Kart™: Bowser's Challenge",
+      "entityType": "ATTRACTION",
+      "parkId": "12dbb85b-265f-44e6-bccf-f1faa17211fc",
+      "externalId": "uor.ueu.rides.mario_cart_bowsers_challenge",
+      "status": "CLOSED",
+      "operatingHours": [
+        {
+          "type": "OPERATING",
+          "endTime": null,
+          "startTime": "2026-10-07T13:00:00.000Z"
+        }
+      ],
+      "lastUpdated": "2026-10-07T00:59:32.273Z"
+    },
+    {
+      "id": "447033ce-ee1f-4cca-bb12-47d22583ac12",
+      "name": "Stardust Racers",
+      "entityType": "ATTRACTION",
+      "parkId": "12dbb85b-265f-44e6-bccf-f1faa17211fc",
+      "externalId": "uor.ueu.rides.stardust_racers",
+      "status": "CLOSED",
+      "operatingHours": [
+        {
+          "type": "OPERATING",
+          "endTime": null,
+          "startTime": "2026-10-07T13:00:00.000Z"
+        }
+      ],
+      "lastUpdated": "2026-10-07T00:59:32.301Z"
+    },
+    {
+      "id": "4cd6ac88-3945-49bb-ad20-2ce04a3f9628",
+      "name": "Meet Mario and Luigi",
+      "entityType": "SHOW",
+      "parkId": "12dbb85b-265f-44e6-bccf-f1faa17211fc",
+      "externalId": "uor.ueu.show.meet_mario_and_luigi",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-07T00:11:59.511Z"
+    },
+    {
+      "id": "5fc2be0f-bf95-4fb7-b0fb-85b067d2fbb0",
+      "name": "The Cosmos Fountain",
+      "entityType": "SHOW",
+      "parkId": "12dbb85b-265f-44e6-bccf-f1faa17211fc",
+      "externalId": "uor.ueu.show.the_cosmos_fountain",
+      "status": "OPERATING",
+      "lastUpdated": "2026-07-07T01:00:37.666Z"
+    },
+    {
+      "id": "76caa8d0-f54b-4601-9d57-a7f1ddc02af4",
+      "name": "Dragon Racer's Rally",
+      "entityType": "ATTRACTION",
+      "parkId": "12dbb85b-265f-44e6-bccf-f1faa17211fc",
+      "externalId": "uor.ueu.rides.dragon_racers_rally",
+      "status": "CLOSED",
+      "operatingHours": [
+        {
+          "type": "OPERATING",
+          "endTime": null,
+          "startTime": "2026-10-07T13:00:00.000Z"
+        }
+      ],
+      "lastUpdated": "2026-10-07T00:59:32.239Z"
+    },
+    {
+      "id": "9c409ec9-a805-456c-96fc-d867cc5bc81b",
+      "name": "Le Cirque Arcanus™",
+      "entityType": "SHOW",
+      "parkId": "12dbb85b-265f-44e6-bccf-f1faa17211fc",
+      "externalId": "uor.ueu.show.le_cirque_arcanus",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-06T23:10:37.854Z"
+    },
+    {
+      "id": "9d47d7fe-ff0d-4a52-bf9d-1e07436aa22c",
+      "name": "Meet Toothless and Friends",
+      "entityType": "SHOW",
+      "parkId": "12dbb85b-265f-44e6-bccf-f1faa17211fc",
+      "externalId": "uor.ueu.show.meet_toothless",
+      "status": "CLOSED",
+      "operatingHours": [
+        {
+          "type": "OPERATING",
+          "endTime": null,
+          "startTime": "2026-10-07T13:00:00.000Z"
+        }
+      ],
+      "lastUpdated": "2026-10-07T00:59:32.316Z"
+    },
+    {
+      "id": "a872883d-761b-4dda-a124-5dadcfa9e5ae",
+      "name": "Universal Celestial Goodnight",
+      "entityType": "SHOW",
+      "parkId": "12dbb85b-265f-44e6-bccf-f1faa17211fc",
+      "externalId": "uor.ueu.shows.celestialgoodnight",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-07T01:00:53.394Z"
+    },
+    {
+      "id": "c6b1b8cf-55ef-416c-b00d-e469993617b0",
+      "name": "Hiccup's Wing Gliders",
+      "entityType": "ATTRACTION",
+      "parkId": "12dbb85b-265f-44e6-bccf-f1faa17211fc",
+      "externalId": "uor.ueu.rides.hiccups_wing_glider",
+      "status": "CLOSED",
+      "operatingHours": [
+        {
+          "type": "OPERATING",
+          "endTime": null,
+          "startTime": "2026-10-07T13:00:00.000Z"
+        }
+      ],
+      "lastUpdated": "2026-10-07T00:59:32.264Z"
+    },
+    {
+      "id": "dbc4f0d8-fdef-4dfc-a1c2-33917f742f40",
+      "name": "Harry Potter and the Battle at the Ministry™",
+      "entityType": "ATTRACTION",
+      "parkId": "12dbb85b-265f-44e6-bccf-f1faa17211fc",
+      "externalId": "uor.ueu.rides.harry_potter_and_the_battle_at_the_ministry",
+      "status": "CLOSED",
+      "operatingHours": [
+        {
+          "type": "OPERATING",
+          "endTime": null,
+          "startTime": "2026-10-07T13:00:00.000Z"
+        }
+      ],
+      "lastUpdated": "2026-10-07T00:59:32.256Z"
+    },
+    {
+      "id": "dd8c015d-511f-47d4-b98b-18ce15735588",
+      "name": "Mine-Cart Madness™",
+      "entityType": "ATTRACTION",
+      "parkId": "12dbb85b-265f-44e6-bccf-f1faa17211fc",
+      "externalId": "uor.ueu.rides.mine-cart_madness",
+      "status": "CLOSED",
+      "operatingHours": [
+        {
+          "type": "OPERATING",
+          "endTime": null,
+          "startTime": "2026-10-07T13:00:00.000Z"
+        }
+      ],
+      "lastUpdated": "2026-10-07T00:59:32.282Z"
+    },
+    {
+      "id": "e3dd1ecd-f674-4aa7-83d9-9c7b4a8c886d",
+      "name": "The Untrainable Dragon",
+      "entityType": "SHOW",
+      "parkId": "12dbb85b-265f-44e6-bccf-f1faa17211fc",
+      "externalId": "uor.ueu.shows.the_untrainable_dragon",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-06T23:31:10.776Z"
+    },
+    {
+      "id": "eaca831d-bcbb-4a1e-9bf0-6ea97ccc88e0",
+      "name": "Curse of the Werewolf",
+      "entityType": "ATTRACTION",
+      "parkId": "12dbb85b-265f-44e6-bccf-f1faa17211fc",
+      "externalId": "uor.ueu.rides.curse_of_the_werewolf",
+      "status": "CLOSED",
+      "operatingHours": [
+        {
+          "type": "OPERATING",
+          "endTime": null,
+          "startTime": "2026-10-07T14:00:00.000Z"
+        }
+      ],
+      "lastUpdated": "2026-10-07T00:59:32.230Z"
+    },
+    {
+      "id": "f6dc44e3-02f4-414d-9adc-c3c342efa275",
+      "name": "Meet Princess Peach",
+      "entityType": "SHOW",
+      "parkId": "12dbb85b-265f-44e6-bccf-f1faa17211fc",
+      "externalId": "uor.ueu.show.meet_princess_peach",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-06T22:32:17.164Z"
+    },
+    {
+      "id": "fe3eb8a9-0022-40a6-989e-1d71d88e1ed3",
+      "name": "Meet Toad",
+      "entityType": "SHOW",
+      "parkId": "12dbb85b-265f-44e6-bccf-f1faa17211fc",
+      "externalId": "uor.ueu.show.meet_toad",
+      "status": "OPERATING",
+      "lastUpdated": "2026-07-01T01:35:12.449Z"
+    }
+  ],
+  "fetchedAt": "2026-10-07T03:09:35Z"
+}

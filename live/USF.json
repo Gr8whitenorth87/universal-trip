@@ -1,0 +1,524 @@
+{
+  "id": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+  "name": "Universal Studios Florida",
+  "entityType": "PARK",
+  "timezone": "America/New_York",
+  "liveData": [
+    {
+      "id": "06ed53f9-3f1b-4ff2-94f2-0ce45015b62a",
+      "name": "Nightmare Fuel: Blood Noir",
+      "entityType": "SHOW",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.events.hhn_2026_show_nightmare_fuel_blood_noir",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-05T05:45:50.641Z"
+    },
+    {
+      "id": "079c0df0-7305-4f61-ab0e-c7725f4fe1b6",
+      "name": "Animal Actors on Location!™",
+      "entityType": "SHOW",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.shows.animal_actors_on_location",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-06T21:30:31.772Z"
+    },
+    {
+      "id": "12a4b7d4-3a27-48dd-b355-99fe9f8aab37",
+      "name": "Stranger Things 5",
+      "entityType": "ATTRACTION",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.rides.hhn_haunted_house_stranger_things_5",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-05T10:59:18.198Z"
+    },
+    {
+      "id": "14af192d-dfce-4bdb-bf5c-1c1957499a6a",
+      "name": "Meet SpongeBob SquarePants and Friends",
+      "entityType": "SHOW",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.shows.meet_spongeBob_squarepants",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-06T20:56:18.231Z"
+    },
+    {
+      "id": "1524b67b-4984-4a80-9d9f-753b8482c6f0",
+      "name": "Celestina Warbeck and the Banshees",
+      "entityType": "SHOW",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.shows.celestina_warbeck_and_the_banshees",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-06T21:30:31.781Z"
+    },
+    {
+      "id": "17dd3a01-3127-4e22-8d73-35680fa8b034",
+      "name": "Illumination Theater",
+      "entityType": "SHOW",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.shows.illumination_theater",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-06T21:02:15.063Z"
+    },
+    {
+      "id": "1cf7e8a5-6611-44a9-acf1-fbff7a835056",
+      "name": "Universal Orlando's Horror Make-Up Show™",
+      "entityType": "SHOW",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.shows.horrormakeupshow",
+      "status": "CLOSED",
+      "lastUpdated": "2026-08-24T21:10:27.118Z"
+    },
+    {
+      "id": "1e16afdd-15e3-4e4a-b3af-8aeebd7534f8",
+      "name": "E.T. Adventure",
+      "entityType": "ATTRACTION",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.rides.e.t._adventure",
+      "status": "CLOSED",
+      "operatingHours": [
+        {
+          "type": "OPERATING",
+          "endTime": null,
+          "startTime": "2026-10-07T14:00:00.000Z"
+        }
+      ],
+      "lastUpdated": "2026-10-06T23:41:45.715Z"
+    },
+    {
+      "id": "2122adff-52a3-49ca-9d20-5a6faafc8c77",
+      "name": "Hogwarts™ Express - Last Train",
+      "entityType": "ATTRACTION",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.rides.hogwarts_express_last_train",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-06T00:04:31.268Z"
+    },
+    {
+      "id": "2436bad1-f319-44d5-98ac-a283b81956c6",
+      "name": "The Bourne Stuntacular",
+      "entityType": "SHOW",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.shows.the_bourne_stuntacular",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-06T22:07:36.103Z"
+    },
+    {
+      "id": "24712410-a3a8-4ee0-b2f7-df889424ae76",
+      "name": "Sinners",
+      "entityType": "ATTRACTION",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.rides.hhn_haunted_house_sinners",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-05T10:59:18.192Z"
+    },
+    {
+      "id": "25d47d04-a917-405a-9904-9be2b499b2dd",
+      "name": "Illumination's Villain-Con Minion Blast",
+      "entityType": "ATTRACTION",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.rides.illuminations_villain_con_minion_blast",
+      "status": "CLOSED",
+      "operatingHours": [
+        {
+          "type": "OPERATING",
+          "endTime": null,
+          "startTime": "2026-10-07T13:00:00.000Z"
+        }
+      ],
+      "lastUpdated": "2026-10-06T23:41:45.738Z"
+    },
+    {
+      "id": "2f4690b4-72b0-4845-bcce-9e735397d60b",
+      "name": "The Blues Brothers® Show",
+      "entityType": "SHOW",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.shows.blues_brothers",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-06T19:57:41.010Z"
+    },
+    {
+      "id": "333c6657-2a9f-4423-a7a2-bf0230bf669a",
+      "name": "Shrek’s Swamp Meet",
+      "entityType": "SHOW",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.show.shreks.swamp.meet",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-06T21:02:15.021Z"
+    },
+    {
+      "id": "335480e2-3110-4e40-b7e0-5f078fedd7af",
+      "name": "Universal Mega Movie Parade",
+      "entityType": "SHOW",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.shows.universalmegamovieparade",
+      "status": "CLOSED",
+      "lastUpdated": "2026-09-04T20:26:28.589Z"
+    },
+    {
+      "id": "37989fb7-5576-4247-bd6e-e981bc70cca2",
+      "name": "Trolls Trollercoaster",
+      "entityType": "ATTRACTION",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.rides.trolls_trollercoaster",
+      "status": "CLOSED",
+      "operatingHours": [
+        {
+          "type": "OPERATING",
+          "endTime": null,
+          "startTime": "2026-10-07T14:00:00.000Z"
+        }
+      ],
+      "lastUpdated": "2026-10-06T23:41:45.792Z"
+    },
+    {
+      "id": "41c4491c-f3d9-41e5-963c-21a10a255b39",
+      "name": "Cybergoria",
+      "entityType": "ATTRACTION",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.rides.hhn_haunted_house_cybergoria",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-05T10:59:18.138Z"
+    },
+    {
+      "id": "41d282f8-2015-4caa-9591-9faa948e263e",
+      "name": "Beat Builders",
+      "entityType": "SHOW",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.shows.beat_builders",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-06T20:41:12.263Z"
+    },
+    {
+      "id": "48f99577-cfc3-40b4-8161-844300c823d4",
+      "name": "Ozzy Osbourne: Prince of Darkness",
+      "entityType": "ATTRACTION",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.rides.hhn_haunted_house_ozzy_osbourne_prince_of_darkness",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-05T10:59:18.186Z"
+    },
+    {
+      "id": "53ac1ddd-51b1-4b5b-a72b-3a7b3e25397a",
+      "name": "INVASION: Alien Abduction",
+      "entityType": "ATTRACTION",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.rides.hhn_haunted_house_invasion_alien_abduction",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-05T10:59:18.165Z"
+    },
+    {
+      "id": "55222885-493c-4280-b295-6fd7c609f12d",
+      "name": "Hollywood Character Zone",
+      "entityType": "SHOW",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.shows.hollywood_character_zone",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-06T21:02:15.043Z"
+    },
+    {
+      "id": "5c5dec98-962b-4808-ac6d-09feb283b771",
+      "name": "CineSational: A Symphonic Spectacular",
+      "entityType": "SHOW",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.shows.cinesationalasymphonicspectacular",
+      "status": "CLOSED",
+      "lastUpdated": "2026-09-02T16:05:09.072Z"
+    },
+    {
+      "id": "625a3cc3-7d7e-468b-96fe-1ec00df7b739",
+      "name": "Race Through New York Starring Jimmy Fallon",
+      "entityType": "ATTRACTION",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.rides.race_through_new_york_starring_jimmy_fallon",
+      "status": "CLOSED",
+      "operatingHours": [
+        {
+          "type": "OPERATING",
+          "endTime": null,
+          "startTime": "2026-10-07T13:00:00.000Z"
+        }
+      ],
+      "lastUpdated": "2026-10-06T23:41:45.764Z"
+    },
+    {
+      "id": "6b57dae1-a6e9-42ba-b59d-8ef4ee8ae11e",
+      "name": "MADLANDS: Caged Cannibals",
+      "entityType": "ATTRACTION",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.rides.hhn_haunted_house_madlands_caged_cannibals",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-05T10:59:18.177Z"
+    },
+    {
+      "id": "709e0baf-dd74-4b4e-9d19-7092336c0846",
+      "name": "Jack & Oddfellow: Chaos & Control",
+      "entityType": "ATTRACTION",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.rides.hhn_haunted_house_jack_oddfellow_chaos_control",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-05T10:59:18.171Z"
+    },
+    {
+      "id": "70ac72a3-9675-4c41-a1b1-e4801072927a",
+      "name": "Harry Potter and the Escape from Gringotts™",
+      "entityType": "ATTRACTION",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.rides.harry_potter_and_the_escape_from_gringotts",
+      "status": "CLOSED",
+      "operatingHours": [
+        {
+          "type": "OPERATING",
+          "endTime": null,
+          "startTime": "2026-10-07T13:00:00.000Z"
+        }
+      ],
+      "lastUpdated": "2026-10-06T23:41:45.724Z"
+    },
+    {
+      "id": "7288f24a-396e-4eeb-bb3b-4a90e65269f2",
+      "name": "Despicable Me Minion Mayhem™",
+      "entityType": "ATTRACTION",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.rides.despicable_me_minion_mayhem",
+      "queue": {
+        "PAID_STANDBY": {
+          "waitTime": null
+        }
+      },
+      "status": "CLOSED",
+      "operatingHours": [
+        {
+          "type": "OPERATING",
+          "endTime": null,
+          "startTime": "2026-10-07T13:00:00.000Z"
+        }
+      ],
+      "lastUpdated": "2026-10-06T23:41:45.705Z"
+    },
+    {
+      "id": "750939c5-a69e-408a-8d55-66c272fa265e",
+      "name": "TRANSFORMERS™: The Ride-3D",
+      "entityType": "ATTRACTION",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.rides.transformers_the_ride_3d",
+      "queue": {
+        "PAID_STANDBY": {
+          "waitTime": null
+        }
+      },
+      "status": "CLOSED",
+      "operatingHours": [
+        {
+          "type": "OPERATING",
+          "endTime": null,
+          "startTime": "2026-10-07T13:00:00.000Z"
+        }
+      ],
+      "lastUpdated": "2026-10-06T23:41:45.785Z"
+    },
+    {
+      "id": "7e70bc9e-7dce-4dd2-8823-57b8d6ec7570",
+      "name": "The Simpsons Ride™",
+      "entityType": "ATTRACTION",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.rides.the_simpsons_ride",
+      "status": "CLOSED",
+      "operatingHours": [
+        {
+          "type": "OPERATING",
+          "endTime": null,
+          "startTime": "2026-10-07T13:00:00.000Z"
+        }
+      ],
+      "lastUpdated": "2026-10-06T23:41:45.777Z"
+    },
+    {
+      "id": "91cae293-64f8-48b6-88ec-02dcfcdd1f91",
+      "name": "MEN IN BLACK™ Alien Attack!",
+      "entityType": "ATTRACTION",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.rides.men_in_black_alien_attack",
+      "status": "CLOSED",
+      "operatingHours": [
+        {
+          "type": "OPERATING",
+          "endTime": null,
+          "startTime": "2026-10-07T13:00:00.000Z"
+        }
+      ],
+      "lastUpdated": "2026-10-06T23:41:45.754Z"
+    },
+    {
+      "id": "96e71193-49f0-40b2-9bba-644e530d8115",
+      "name": "Kang & Kodos' Twirl 'n' Hurl",
+      "entityType": "ATTRACTION",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.rides.kang_and_kodos_twirl_n_hurl",
+      "status": "CLOSED",
+      "operatingHours": [
+        {
+          "type": "OPERATING",
+          "endTime": null,
+          "startTime": "2026-10-07T14:00:00.000Z"
+        }
+      ],
+      "lastUpdated": "2026-10-06T23:41:45.746Z"
+    },
+    {
+      "id": "98ac6a78-0320-4949-8824-934d0e73e4e2",
+      "name": "Hellraiser",
+      "entityType": "ATTRACTION",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.rides.hhn_haunted_house_hellraiser",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-05T10:59:18.159Z"
+    },
+    {
+      "id": "98eff124-c645-4451-b723-7456d45faaeb",
+      "name": "Po Live!",
+      "entityType": "SHOW",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.show.po-live",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-05T20:02:53.745Z"
+    },
+    {
+      "id": "99accf82-ca8d-425d-abc8-33e69aee75e9",
+      "name": "H.R. Bloodengutz Presents: A Halloween Fright-Tacular!",
+      "entityType": "ATTRACTION",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.rides.hhn_haunted_house_halloween_fright-tacular",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-05T10:59:18.153Z"
+    },
+    {
+      "id": "a492aa01-6f29-43f0-9aec-8adcb8da4674",
+      "name": "Meet The TRANSFORMERS™",
+      "entityType": "SHOW",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.shows.meet_the_transformers",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-06T22:07:36.096Z"
+    },
+    {
+      "id": "a54b961b-06d3-492c-88b5-201cb32399c2",
+      "name": "DreamWorks Character Zone",
+      "entityType": "SHOW",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.show.dreamworks_character_zone",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-06T20:41:12.256Z"
+    },
+    {
+      "id": "be4bc36e-e2d8-474b-9ea7-74c0e3e6c82d",
+      "name": "Evil Dead Burn",
+      "entityType": "ATTRACTION",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.rides.hhn_haunted_house_evil_dead_burn",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-05T10:59:18.146Z"
+    },
+    {
+      "id": "bf89766b-1d19-428f-9e68-71e12f25287b",
+      "name": "Marilyn and the Diamond Bellas",
+      "entityType": "SHOW",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.shows.marilyn_and_the_diamond_bellas",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-06T20:46:46.529Z"
+    },
+    {
+      "id": "c08df5ba-1141-4968-b748-5e7802885ec0",
+      "name": "Stranger Things: Return to Hawkins",
+      "entityType": "SHOW",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.events.hhn_2026_show_stranger_things_return_to_hawkins",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-05T05:45:50.650Z"
+    },
+    {
+      "id": "c85d936f-c5b7-490b-880b-6f0bf44ba557",
+      "name": "DreamWorks Imagination Celebration",
+      "entityType": "SHOW",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.show.dreamWorks_imagination_celebration",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-06T21:15:54.836Z"
+    },
+    {
+      "id": "e99b72a6-37d0-46df-ab11-e9ff6603f259",
+      "name": "Ollivanders™ Experience in Diagon Alley™",
+      "entityType": "SHOW",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.shows.ollivanders",
+      "status": "CLOSED",
+      "operatingHours": [
+        {
+          "type": "OPERATING",
+          "endTime": null,
+          "startTime": "2026-10-07T13:00:00.000Z"
+        }
+      ],
+      "lastUpdated": "2026-10-06T23:41:45.801Z"
+    },
+    {
+      "id": "ec25d9a7-b4d4-4ebf-a6c4-c18389351764",
+      "name": "Revenge of the Mummy",
+      "entityType": "ATTRACTION",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.rides.revenge_of_the_mummy",
+      "status": "CLOSED",
+      "operatingHours": [
+        {
+          "type": "OPERATING",
+          "endTime": null,
+          "startTime": "2026-10-07T13:00:00.000Z"
+        }
+      ],
+      "lastUpdated": "2026-10-06T23:41:45.770Z"
+    },
+    {
+      "id": "ec4c8603-5ccd-4af2-a7b1-0684664c0bc1",
+      "name": "The Tales of Beedle the Bard",
+      "entityType": "SHOW",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.shows.thetalesofbeedlethebard",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-06T21:02:15.074Z"
+    },
+    {
+      "id": "f0750e5e-7629-4c53-99d2-e0924a8afeed",
+      "name": "Hogwarts Express™ - King's Cross Station",
+      "entityType": "ATTRACTION",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.rides.hogwarts_express_-_kings_cross_station",
+      "status": "CLOSED",
+      "operatingHours": [
+        {
+          "type": "OPERATING",
+          "endTime": null,
+          "startTime": "2026-10-07T13:00:00.000Z"
+        }
+      ],
+      "lastUpdated": "2026-10-06T23:41:45.731Z"
+    },
+    {
+      "id": "f44a531c-09cf-40c4-b2d4-236e8a9285dc",
+      "name": "Hogwarts™ Express - First Train",
+      "entityType": "ATTRACTION",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.rides.hogwarts_express_first_train",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-07T01:33:46.761Z"
+    },
+    {
+      "id": "fa701040-b46a-4291-afb9-b8dc2c8e9a16",
+      "name": "¡Vamos! – Báilalo",
+      "entityType": "SHOW",
+      "parkId": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+      "externalId": "uor.usf.shows.vamos_bailalo",
+      "status": "CLOSED",
+      "lastUpdated": "2026-10-06T20:15:51.920Z"
+    }
+  ],
+  "fetchedAt": "2026-10-07T03:09:35Z"
+}
