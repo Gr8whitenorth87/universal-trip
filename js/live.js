@@ -99,7 +99,7 @@ export async function refresh(code) {
 }
 
 function tick(force) {
-  if (document.hidden || !navigator.onLine) return;
+  if (document.hidden || !navigator.onLine || focusCode === "SHIP") return;
   const now = Date.now();
   for (const code of Object.keys(parks)) {
     const s = state[code];

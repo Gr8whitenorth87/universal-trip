@@ -128,6 +128,9 @@ export function icon(name) {
     walk: '<circle cx="13" cy="4" r="2"/><path d="m9 21 2-6 3 3v3M7 12l3-4 4 1 2 4 2 1M10 8l-1 5"/>',
     check: '<path d="m5 12 4 4 10-10"/>',
     refresh: '<path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/>',
+    anchor: '<circle cx="12" cy="5" r="2"/><path d="M12 7v14M7 11h10M5 15a7 7 0 0 0 14 0"/>',
+    waves: '<path d="M2 9c2-2 4-2 6 0s4 2 6 0 4-2 6 0M2 15c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/>',
+    download: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',
     cake: '<path d="M4 21h16M5 21v-7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v7M5 16c1.5 1 3 1 4.5 0s3-1 4.5 0 3 1 4.5 0M12 12V8M12 5.5c.8-.7 1-1.5 0-2.5-1 1-.8 1.8 0 2.5Z"/>',
   };
   return `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${paths[name] || ""}</svg>`;

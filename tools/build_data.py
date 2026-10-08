@@ -24,7 +24,7 @@ SRC = ROOT / "data" / "src"
 OUT = ROOT / "data" / "app-data.enc.json"
 PRIVATE_DIR = SRC / "private"
 PRIVATE_ENC = SRC / "private.enc.json"
-PRIVATE_FILES = ["plan.json", "guide.json", "dining.json", "birthday.json"]
+PRIVATE_FILES = ["plan.json", "guide.json", "dining.json", "birthday.json", "cruise.json"]
 # Fixed salt so a phone that already unlocked keeps working after each rebuild.
 SALT = hashlib.sha256(b"universal-trip-2026").digest()[:16]
 ITERATIONS = 200_000
@@ -394,12 +394,24 @@ def main():
         "hunts": hunts,
         "interactive": interactive,
         "photos": photos,
-        "plan": private["plan.json"],
+        "plan": {**private["plan.json"], "days": private["plan.json"]["days"] + private["cruise.json"]["days"]},
+        "cruise": {k: v for k, v in private["cruise.json"].items() if k != "days"},
         "guide": private["guide.json"],
         "dining": dining,
         "birthday": private["birthday.json"],
         "riders": [{"name": "Youngest", "height": 51.5}, {"name": "Twins", "height": 54.5}],
     }
+    cruise = private["cruise.json"]
+    ckeys = {p["key"] for p in cruise["places"]}
+    skeys = {p["key"] for p in cruise["ship_spots"]}
+    for day in cruise["days"]:
+        for step in day["steps"]:
+            for k in step.get("places", []) + step.get("fallbackPlaces", []) + [k for c in step.get("choices", []) for k in c.get("places", [])]:
+                if k not in ckeys:
+                    problems.append(f"cruise place missing: {day['date']} {k}")
+            for k in step.get("ship", []):
+                if k not in skeys:
+                    problems.append(f"ship spot missing: {day['date']} {k}")
     keys = {a["key"] for a in attractions}
     for day in (data["plan"] or {}).get("days", []):
         for step in day["steps"]:

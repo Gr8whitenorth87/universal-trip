@@ -1,6 +1,6 @@
 // Offline support: the app shell and trip data are cached so the plan, food and hunts work
 // with no signal. Map tiles are kept as you view them. Live waits always go to the network.
-const VERSION = "ut26-v4";
+const VERSION = "ut26-v5";
 const SHELL = [
   "./",
   "index.html",
@@ -11,6 +11,7 @@ const SHELL = [
   "js/map.js",
   "data/app-data.enc.json",
   "js/lock.js",
+  "js/cruise.js",
   "vendor/leaflet/leaflet.js",
   "vendor/leaflet/leaflet.css",
   "fonts/big-shoulders-display-latin-800-normal.woff2",
@@ -22,7 +23,7 @@ const SHELL = [
   "manifest.webmanifest",
 ];
 const TILES = "ut26-tiles";
-const MAX_TILES = 1500;
+const MAX_TILES = 3000;
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(VERSION).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
@@ -61,18 +62,20 @@ self.addEventListener("fetch", (e) => {
   );
 });
 
+// Tiles are fetched in CORS mode so the response is readable and can be cached
+// (map images otherwise come back opaque, which can't be stored reliably).
 async function tile(req) {
   const cache = await caches.open(TILES);
-  const hit = await cache.match(req);
+  const hit = await cache.match(req.url, { ignoreVary: true, ignoreSearch: true });
   if (hit) return hit;
   try {
-    const res = await fetch(req);
+    const res = await fetch(req.url, { mode: "cors", credentials: "omit" });
     if (res.ok) {
-      cache.put(req, res.clone());
+      await cache.put(req.url, res.clone());
       cache.keys().then((keys) => { if (keys.length > MAX_TILES) cache.delete(keys[0]); });
     }
     return res;
   } catch {
-    return new Response("", { status: 504 });
+    try { return await fetch(req); } catch { return new Response("", { status: 504 }); }
   }
 }

@@ -1,7 +1,8 @@
 import { orlandoNow, toMinutes, fmtTime, ago, walkMinutes, meters, directionsLinks, isApple, store, icon } from "./util.js";
 import { initLive, setFocusPark, onLive, live, liveFor, refresh, scheduleFor } from "./live.js";
 import { savedKey, decryptWith, askPassword, forgetKey } from "./lock.js";
-import { initMap, mapReady, invalidate, showLayer, fitPark, flyTo, drawMarkers, setUser } from "./map.js";
+import { initMap, mapReady, invalidate, showLayer, fitPark, flyTo, drawMarkers, drawPlaces, setUser } from "./map.js";
+import * as Cruise from "./cruise.js";
 
 // ---------------------------------------------------------------- state
 const S = {
@@ -56,6 +57,7 @@ async function boot() {
   D.byKey = Object.fromEntries(D.attractions.map((a) => [a.key, a]));
   D.food.forEach((f) => { f.key = slug(`${f.park} ${f.location} ${f.item}`); });
   D.shows.forEach((s, i) => { s.key = `show-${i}`; });
+  Cruise.initCruise({ S, openSheet, cantRide, showMap: () => go("map") });
 
   const now = orlandoNow();
   S.wish = Math.floor(Math.random() * 50);
@@ -83,6 +85,7 @@ async function boot() {
 function parkForNow() {
   const now = orlandoNow();
   const day = S.data.plan.days.find((d) => d.date === now.date) || S.data.plan.days.find((d) => d.date === "2026-10-15");
+  if (day.mode === "cruise") return "SHIP";
   const steps = day.steps.filter((s) => s.park);
   let park = steps[0] ? steps[0].park : "EPIC";
   for (const s of steps) if (toMinutes(s.time) <= now.minutes) park = s.park;
@@ -93,7 +96,7 @@ function parkForNow() {
 function buildChrome() {
   $("#parkSwitch").innerHTML = Object.values(S.data.parks)
     .map((p) => `<button type="button" class="park-btn" data-park="${p.code}" aria-pressed="false">${esc(p.short)}</button>`)
-    .join("");
+    .join("") + (S.data.cruise ? `<button type="button" class="park-btn" data-park="SHIP" aria-pressed="false">Cruise</button>` : "");
   $("#parkSwitch").addEventListener("click", (e) => {
     const b = e.target.closest("[data-park]");
     if (b) pickPark(b.dataset.park, true);
@@ -122,7 +125,8 @@ function buildChrome() {
 }
 
 function pickPark(code, manual) {
-  if (!S.data.parks[code]) return;
+  if (!S.data.parks[code] && code !== "SHIP") return;
+  S.mapFitFor = null;
   S.park = code;
   S.eatPark = code;
   S.explorePark = code;
@@ -131,7 +135,14 @@ function pickPark(code, manual) {
   setFocusPark(code);
   renderHeader();
   renderView();
-  if (S.view === "map") fitCurrentPark();
+  if (S.view === "map" && code !== "SHIP") fitCurrentPark();
+}
+
+// Keep the header mode in step with the day being viewed.
+function syncModeToDay(d) {
+  if (!d) return;
+  if (d.mode === "cruise" && S.park !== "SHIP") pickPark("SHIP", true);
+  else if (d.mode !== "cruise" && S.park === "SHIP" && d.parks.length) pickPark(d.parks[0], true);
 }
 
 function go(view, push = true) {
@@ -150,6 +161,7 @@ function renderHeader() {
   const p = S.data.parks[S.park];
   document.documentElement.dataset.park = S.park;
   for (const b of document.querySelectorAll(".park-btn")) b.setAttribute("aria-pressed", b.dataset.park === S.park ? "true" : "false");
+  if (S.park === "SHIP") { $("#status").innerHTML = Cruise.headerStatus(orlandoNow()); return; }
   const L = live(S.park);
   const now = orlandoNow();
   const hrs = parkHours(S.park, now.date);
@@ -372,11 +384,13 @@ function renderToday() {
   let currentIdx = -1;
   if (isToday) day.steps.forEach((s, i) => { if (toMinutes(s.time) <= now.minutes) currentIdx = i; });
 
-  const chips = D.plan.days.map((d) => {
+  const chips = D.plan.days.map((d, i) => {
     const dt = new Date(`${d.date}T12:00:00`);
     const label = `${d.label} ${dt.getDate()}`;
     const cake = D.birthday && d.date === D.birthday.date ? `<span class="chip-cake" aria-label="birthday">${icon("cake")}</span>` : "";
-    return `<button type="button" class="chip${d.date === day.date ? " chip-on" : ""}" data-day="${d.date}" aria-pressed="${d.date === day.date}">${esc(label)}${cake}${d.date === now.date ? '<span class="chip-dot" aria-label="today"></span>' : ""}</button>`;
+    const kind = d.mode === "cruise" ? `<span class="chip-kind" aria-label="${d.kind === "sea" ? "sea day" : "port day"}">${icon(d.kind === "sea" ? "waves" : "anchor")}</span>` : "";
+    const sep = d.mode === "cruise" && (i === 0 || D.plan.days[i - 1].mode !== "cruise") ? '<span class="chip-sep" aria-hidden="true"></span>' : "";
+    return `${sep}<button type="button" class="chip${d.date === day.date ? " chip-on" : ""}" data-day="${d.date}" aria-pressed="${d.date === day.date}">${esc(label)}${cake}${kind}${d.date === now.date ? '<span class="chip-dot" aria-label="today"></span>' : ""}</button>`;
   }).join("");
 
   const hours = day.parks.map((code) => {
@@ -404,13 +418,14 @@ function renderToday() {
         <p>${esc(s.detail)}</p>
         ${tlist ? `<ul class="targets">${tlist}</ul>` : ""}
         ${s.birthday && isBday ? `<p class="bday-note">${icon("cake")} ${esc(s.birthday)}</p>` : ""}
+        ${day.mode === "cruise" ? Cruise.stepExtras(s) : ""}
         ${first ? `<div class="step-actions"><button type="button" class="btn btn-quiet" data-mapto="${first.key}">${icon("map")} Show on map</button><a class="btn btn-quiet" href="${directionsLinks(first.lat, first.lng, first.name)[isApple ? "apple" : "google"]}" target="_blank" rel="noopener">${icon("walk")} Walk there</a></div>`
-          : s.query ? `<div class="step-actions"><a class="btn btn-quiet" href="${queryLinks(s.query)[isApple ? "apple" : "google"]}" target="_blank" rel="noopener">${icon("walk")} Directions</a></div>` : ""}
+          : s.query && day.mode !== "cruise" ? `<div class="step-actions"><a class="btn btn-quiet" href="${queryLinks(s.query)[isApple ? "apple" : "google"]}" target="_blank" rel="noopener">${icon("walk")} Directions</a></div>` : ""}
       </div>
     </li>`;
   }).join("");
 
-  const guide = (D.guide || []).map((g) => `<details class="guide"><summary>${esc(g.title)}</summary><p>${esc(g.body)}</p></details>`).join("");
+  const guide = ((day.mode === "cruise" ? D.cruise.tips : D.guide) || []).map((g) => `<details class="guide"><summary>${esc(g.title)}</summary><p>${esc(g.body)}</p></details>`).join("");
 
   $("#view").innerHTML = `
     <section class="today">
@@ -421,17 +436,23 @@ function renderToday() {
         <p>${esc(day.summary)}</p>
         ${hours ? `<div class="hours-row">${hours}</div>` : ""}
         ${res ? `<div class="res"><h2>Reservations</h2><ul>${res}</ul></div>` : ""}
+        ${Cruise.dayHead(day, now)}
       </header>
       <ol class="timeline">${steps}</ol>
+      ${Cruise.dayFoot(day)}
       <section class="guide-wrap">
         <h2>Need to know</h2>
         ${guide}
       </section>
     </section>`;
+  const on = document.querySelector(".today .chip-on");
+  const row = on && on.parentElement;
+  if (row && row.scrollWidth > row.clientWidth) row.scrollLeft = Math.max(0, on.offsetLeft - row.clientWidth / 2 + on.offsetWidth / 2);
 }
 
 // ---------------------------------------------------------------- NOW
 function renderNow() {
+  if (S.park === "SHIP") { Cruise.renderNow($("#view")); return; }
   const D = S.data, code = S.park, p = D.parks[code];
   const L = live(code);
   const sug = suggestions(code);
@@ -528,12 +549,11 @@ function ensureMap() {
   initMap($("#mapEl"), { onSelect: (sel) => openSheet(sel), waitInfo: (a) => waitInfo(a) });
   mapBuilt = true;
   const tools = $("#mapTools");
-  tools.innerHTML = `
-    <div class="chips" role="group" aria-label="Map layers">
-      ${[["rides", "Rides"], ["shows", "Shows"], ["food", "Food"], ["hunts", "Hunts"]].map(([k, l]) => `<button type="button" class="chip${S.mapLayers[k] ? " chip-on" : ""}" data-layer="${k}" aria-pressed="${!!S.mapLayers[k]}">${l}</button>`).join("")}
-    </div>
-    <button type="button" class="fab" data-action="locate" aria-label="Show my location">${icon("locate")}</button>`;
+  renderMapTools();
   tools.addEventListener("click", (e) => {
+    const mp = e.target.closest("[data-mapport]");
+    if (mp) { S.mapPort = mp.dataset.mapport; renderMap(); return; }
+    if (e.target.closest("[data-action=offline]")) { saveOfflineMap(); return; }
     const b = e.target.closest("[data-layer]");
     if (b) {
       const k = b.dataset.layer;
@@ -550,7 +570,30 @@ function ensureMap() {
     }
   });
   for (const [k, on] of Object.entries(S.mapLayers)) showLayer(k, on);
-  fitCurrentPark();
+  if (S.park !== "SHIP") fitCurrentPark();
+}
+
+function renderMapTools() {
+  const tools = $("#mapTools");
+  if (S.park === "SHIP") {
+    S.mapPort = S.mapPort || Cruise.defaultPort(orlandoNow().date);
+    tools.innerHTML = Cruise.mapTools(S.mapPort);
+    return;
+  }
+  tools.innerHTML = `
+    <div class="chips" role="group" aria-label="Map layers">
+      ${[["rides", "Rides"], ["shows", "Shows"], ["food", "Food"], ["hunts", "Hunts"]].map(([k, l]) => `<button type="button" class="chip${S.mapLayers[k] ? " chip-on" : ""}" data-layer="${k}" aria-pressed="${!!S.mapLayers[k]}">${l}</button>`).join("")}
+    </div>
+    <button type="button" class="fab" data-action="locate" aria-label="Show my location">${icon("locate")}</button>`;
+}
+
+async function saveOfflineMap() {
+  if (!("serviceWorker" in navigator) || !navigator.serviceWorker.controller) { toast("Close and reopen the app once, then try again."); return; }
+  if (!navigator.onLine) { toast("Connect to Wi-Fi first, then save the map."); return; }
+  const name = S.data.cruise.ports[S.mapPort].short;
+  toast(`Saving the ${name} map…`);
+  const ok = await Cruise.saveOffline(S.mapPort, (n) => toast(`Saving the ${name} map… ${n}`));
+  toast(ok ? `Saved the ${name} map (${ok} pieces). It works offline now.` : "Couldn't save the map. Try again on Wi-Fi.");
 }
 
 function fitCurrentPark() {
@@ -560,6 +603,17 @@ function fitCurrentPark() {
 
 function renderMap() {
   if (!mapBuilt) return;
+  if (S.park === "SHIP") {
+    renderMapTools();
+    const pts = Cruise.mapPlaces(S.mapPort);
+    drawPlaces(pts);
+    if (S.mapFitFor !== S.mapPort) { fitPark(pts, true); S.mapFitFor = S.mapPort; }
+    if (S.pendingPlace) { const p = Cruise.place(S.pendingPlace); S.pendingPlace = null; if (p && p.lat != null) setTimeout(() => flyTo(p.lat, p.lng, 17), 150); }
+    if (S.pos) setUser(S.pos);
+    return;
+  }
+  if (S.mapFitFor) { S.mapFitFor = null; renderMapTools(); fitCurrentPark(); }
+  else renderMapTools();
   const code = S.park;
   drawMarkers({
     rides: S.data.attractions.filter((a) => a.park === code && RIDE_KINDS.has(a.kind)).map((a) => Object.assign(a, { done: rodeCount(a) > 0 })),
@@ -573,6 +627,7 @@ function renderMap() {
 
 // ---------------------------------------------------------------- EAT
 function renderEat() {
+  if (S.park === "SHIP") { Cruise.renderEat($("#view")); return; }
   const D = S.data;
   const code = S.eatPark;
   const inPark = (f) => code === "ALL" || f.park === code || (code === "USF" && f.park === "CityWalk");
@@ -627,6 +682,7 @@ function renderEat() {
 
 // ---------------------------------------------------------------- EXPLORE
 function renderExplore() {
+  if (S.park === "SHIP") { Cruise.renderExplore($("#view")); return; }
   const D = S.data, code = S.explorePark, p = D.parks[code];
   const now = orlandoNow();
   const parkTabs = ["USF", "IOA", "EPIC"].map((c) => `<button type="button" data-explorepark="${c}" aria-pressed="${code === c}">${esc(D.parks[c].short)}</button>`).join("");
@@ -679,7 +735,13 @@ function onViewClick(e) {
   const t = e.target.closest("button, a");
   if (!t) return;
   const ds = t.dataset;
-  if (ds.day) { S.day = ds.day; store.set("day", S.day); if (ds.goto) go(ds.goto); else renderToday(); return; }
+  if (ds.day) {
+    S.day = ds.day; store.set("day", S.day);
+    syncModeToDay(S.data.plan.days.find((d) => d.date === ds.day));
+    if (ds.goto) go(ds.goto); else renderToday();
+    return;
+  }
+  if (Cruise.handleClick(ds)) return;
   if (ds.wish) { S.wish += 1; renderToday(); confetti(false); return; }
   if (ds.photo != null) { const i = ds.photo; S.photos[i] = !S.photos[i]; if (!S.photos[i]) delete S.photos[i]; store.set("bdayPhotos", S.photos); renderToday(); const d = document.querySelector(".bday-more"); if (d) d.open = true; if (S.photos[i]) confetti(false); return; }
   if (ds.dining) { const d = diningItem(ds.dining); if (d) openSheet({ type: "dining", item: d }); return; }
@@ -744,6 +806,7 @@ function renderSheet() {
   const sel = S.sheet;
   if (!sel) return;
   const el = $("#sheet");
+  if (Cruise.renderSheet(sel, el)) return;
   if (sel.type === "ride") {
     const a = sel.item;
     const w = waitInfo(a);
@@ -856,6 +919,7 @@ function onSheetClick(e) {
   if (!t) return;
   const ds = t.dataset;
   if (ds.close) { closeSheet(); return; }
+  if (ds.portmap) { closeSheet(); if (S.park !== "SHIP") pickPark("SHIP", true); Cruise.handleClick(ds); return; }
   if (ds.sheetOpen) { const a = S.data.byKey[ds.sheetOpen]; if (a) openSheet({ type: "ride", item: a }); return; }
   if (ds.sheetDone) { toggleDone(ds.sheetDone); return; }
   if (ds.sheetExpress) { const a = S.data.byKey[ds.sheetExpress]; setExpressUsed(a, !expressUsed(a)); renderSheet(); renderView(); return; }
@@ -913,6 +977,7 @@ function throttleRender() {
 }
 
 function autoPark() {
+  if (S.park === "SHIP" || Cruise.isCruiseDate(orlandoNow().date)) return;
   if (Date.now() - S.parkPickedAt < 30 * 60 * 1000) return;
   let best = null;
   for (const p of Object.values(S.data.parks)) {

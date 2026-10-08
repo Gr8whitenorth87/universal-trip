@@ -13,7 +13,11 @@ export function initMap(el, { onSelect, waitInfo }) {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
   }).addTo(map);
   L.control.zoom({ position: "bottomright" }).addTo(map);
-  layers = { rides: L.layerGroup().addTo(map), food: L.layerGroup(), hunts: L.layerGroup(), shows: L.layerGroup().addTo(map) };
+  // Below street level, only beaches and piers keep their labels so pins stay readable.
+  const labels = () => el.classList.toggle("labels-few", map.getZoom() < 17);
+  map.on("zoomend", labels);
+  labels();
+  layers = { rides: L.layerGroup().addTo(map), food: L.layerGroup(), hunts: L.layerGroup(), shows: L.layerGroup().addTo(map), places: L.layerGroup().addTo(map) };
   built = true;
   return map;
 }
@@ -26,12 +30,33 @@ export function showLayer(name, on) {
   if (on) layers[name].addTo(map); else map.removeLayer(layers[name]);
 }
 
-export function fitPark(points) {
+export function fitPark(points, labelled = false) {
   if (!map || !points.length) return;
-  map.fitBounds(L.latLngBounds(points.map((p) => [p.lat, p.lng])).pad(0.08), { maxZoom: 18 });
+  const b = L.latLngBounds(points.map((p) => [p.lat, p.lng]));
+  if (labelled) map.fitBounds(b, { paddingTopLeft: [24, 90], paddingBottomRight: [150, 40], maxZoom: 17 });
+  else map.fitBounds(b.pad(0.08), { maxZoom: 18 });
 }
 
 export function flyTo(lat, lng, zoom = 18) { if (map) map.flyTo([lat, lng], zoom, { duration: 0.6 }); }
+
+// Cruise ports: one pin per spot, labelled, colored by type.
+export function drawPlaces(places) {
+  if (!map) return;
+  for (const g of Object.values(layers)) g.clearLayers();
+  for (const p of places) {
+    if (p.lat == null) continue;
+    const m = L.marker([p.lat, p.lng], {
+      icon: L.divIcon({
+        className: "pin-wrap",
+        html: `<div class="place-pin place-${p.type}"><i></i><span>${p.name.replace(/[<>&]/g, "")}</span></div>`,
+        iconSize: [18, 18], iconAnchor: [9, 9],
+      }),
+      title: p.name, keyboard: true, zIndexOffset: p.type === "pier" ? 800 : p.type === "beach" ? 400 : 0,
+    });
+    m.on("click", () => onPick({ type: "place", item: p }));
+    layers.places.addLayer(m);
+  }
+}
 
 export function drawMarkers({ rides, food, hunts, shows }) {
   if (!map) return;
