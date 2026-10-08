@@ -502,7 +502,7 @@ body.locked .top, body.locked .tabs, body.locked main, body.locked .map-wrap { d
 .wx-now { display: flex; gap: 10px; align-items: center; background: var(--surface); border-radius: var(--r-md); padding: 8px 12px; box-shadow: var(--shadow); font-size: .95rem; }
 .wx-now .wx-icon { width: 28px; height: 28px; }
 .wx-rows { list-style: none; margin: 0; padding: 0 0 8px; display: grid; gap: 4px; }
-.wx-row { width: 100%; display: grid; grid-template-columns: 66px 26px 1fr auto 46px; gap: 8px; align-items: center; border: 0; background: transparent; text-align: left; padding: 6px 4px; border-radius: var(--r-sm); font-variant-numeric: tabular-nums; }
+.wx-row { width: 100%; display: grid; grid-template-columns: 62px 22px 1fr auto 42px; gap: 6px; align-items: center; border: 0; background: transparent; text-align: left; padding: 6px 4px; border-radius: var(--r-sm); font-variant-numeric: tabular-nums; }
 .wx-row .wx-icon { width: 24px; height: 24px; }
 .wx-row-on .wx-row { background: var(--surface-2); }
 .wx-row-day { font-weight: 700; }
@@ -511,3 +511,5 @@ body.locked .top, body.locked .tabs, body.locked main, body.locked .map-wrap { d
 .wx-row-rain { text-align: right; color: var(--ink-2); font-size: .88rem; }
 .wx-trip summary { font-weight: 700; }
 .wx-row-day { white-space: nowrap; }
+.wx-row-temp { font-size: .92rem; white-space: nowrap; }
+.wx-row-place { font-size: .84rem; }
