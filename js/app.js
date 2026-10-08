@@ -607,7 +607,7 @@ function renderMap() {
     renderMapTools();
     const pts = Cruise.mapPlaces(S.mapPort);
     drawPlaces(pts);
-    if (S.mapFitFor !== S.mapPort) { fitPark(pts, true); S.mapFitFor = S.mapPort; }
+    if (S.mapFitFor !== S.mapPort) { fitPark(pts.filter((p) => !p.nofit), true); S.mapFitFor = S.mapPort; }
     if (S.pendingPlace) { const p = Cruise.place(S.pendingPlace); S.pendingPlace = null; if (p && p.lat != null) setTimeout(() => flyTo(p.lat, p.lng, 17), 150); }
     if (S.pos) setUser(S.pos);
     return;
