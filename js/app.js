@@ -3,6 +3,7 @@ import { initLive, setFocusPark, onLive, live, liveFor, refresh, scheduleFor } f
 import { savedKey, decryptWith, askPassword, forgetKey } from "./lock.js";
 import { initMap, mapReady, invalidate, showLayer, fitPark, flyTo, drawMarkers, drawPlaces, setUser } from "./map.js";
 import * as Cruise from "./cruise.js";
+import * as Weather from "./weather.js";
 
 // ---------------------------------------------------------------- state
 const S = {
@@ -57,7 +58,9 @@ async function boot() {
   D.byKey = Object.fromEntries(D.attractions.map((a) => [a.key, a]));
   D.food.forEach((f) => { f.key = slug(`${f.park} ${f.location} ${f.item}`); });
   D.shows.forEach((s, i) => { s.key = `show-${i}`; });
-  Cruise.initCruise({ S, openSheet, cantRide, showMap: () => go("map") });
+  Cruise.initCruise({ S, openSheet, cantRide, showMap: () => go("map"), weatherCard: (d, k) => Weather.card(d, k) });
+  Weather.initWeather(D.cruise && D.cruise.weather);
+  Weather.onWeather(() => { if (S.view === "today" || S.view === "now") renderView(); });
 
   const now = orlandoNow();
   S.wish = Math.floor(Math.random() * 50);
@@ -437,10 +440,12 @@ function renderToday() {
         ${hours ? `<div class="hours-row">${hours}</div>` : ""}
         ${res ? `<div class="res"><h2>Reservations</h2><ul>${res}</ul></div>` : ""}
         ${Cruise.dayHead(day, now)}
+        ${Weather.card(day.date, day.mode === "cruise" ? (day.kind === "sea" ? "sea" : "port") : "park")}
       </header>
       <ol class="timeline">${steps}</ol>
       ${Cruise.dayFoot(day)}
       <section class="guide-wrap">
+        ${Weather.tripList(D.plan.days.map((d) => d.date), day.date, (d) => { const x = D.plan.days.find((y) => y.date === d); return `${x.label} ${Number(d.slice(8))}`; })}
         <h2>Need to know</h2>
         ${guide}
       </section>
@@ -516,6 +521,7 @@ function renderNow() {
 
   $("#view").innerHTML = `
     <section class="now">
+      ${Weather.compact(orlandoNow().date, orlandoNow().time)}
       ${birthdayBanner()}
       ${closedBanner}
       ${geoBanner}

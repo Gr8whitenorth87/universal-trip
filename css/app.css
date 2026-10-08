@@ -477,3 +477,37 @@ body.locked .top, body.locked .tabs, body.locked main, body.locked .map-wrap { d
 
 .place-paid i { background: #8A93A3; }
 .labels-few .place-pin:not(.place-beach):not(.place-pier) span { display: none; }
+
+/* ---------- weather ---------- */
+.wx { background: var(--surface); border-radius: var(--r-lg); padding: 12px 14px; display: grid; gap: 8px; box-shadow: var(--shadow); }
+.wx-main { display: flex; align-items: center; gap: 12px; }
+.wx-main > div:nth-child(2) { display: grid; gap: 2px; flex: 1; min-width: 0; }
+.wx-main b { font: 800 1.7rem/1 var(--display); letter-spacing: .02em; font-variant-numeric: tabular-nums; }
+.wx-main span { color: var(--ink-2); font-size: .9rem; }
+.wx-icon { width: 38px; height: 38px; flex: none; }
+.wxi-sun { color: #E9A100; }
+.wxi-partly { color: #D9A21E; }
+.wxi-cloud { color: #7E8DA6; }
+.wxi-rain { color: #2C7BE5; }
+.wxi-storm { color: #7446DB; }
+.wx-rain-lo, .wx-rain-mid, .wx-rain-hi { display: grid; text-align: right; flex: none; }
+.wx-main .wx-rain-lo b, .wx-main .wx-rain-mid b, .wx-main .wx-rain-hi b { font-size: 1.5rem; }
+.wx-rain-mid b { color: #C98A00; }
+.wx-rain-hi b { color: var(--warn); }
+.wx-rain-lo span, .wx-rain-mid span, .wx-rain-hi span { font-size: .75rem !important; font-weight: 700; }
+.wx-facts { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.wx-facts li { background: var(--surface-2); border-radius: 6px; padding: 3px 9px; font-size: .85rem; font-weight: 700; }
+.wx-note { font-size: .92rem; color: var(--ink) !important; }
+.wx-typical { background: var(--surface-2); box-shadow: none; }
+.wx-now { display: flex; gap: 10px; align-items: center; background: var(--surface); border-radius: var(--r-md); padding: 8px 12px; box-shadow: var(--shadow); font-size: .95rem; }
+.wx-now .wx-icon { width: 28px; height: 28px; }
+.wx-rows { list-style: none; margin: 0; padding: 0 0 8px; display: grid; gap: 4px; }
+.wx-row { width: 100%; display: grid; grid-template-columns: 66px 26px 1fr auto 46px; gap: 8px; align-items: center; border: 0; background: transparent; text-align: left; padding: 6px 4px; border-radius: var(--r-sm); font-variant-numeric: tabular-nums; }
+.wx-row .wx-icon { width: 24px; height: 24px; }
+.wx-row-on .wx-row { background: var(--surface-2); }
+.wx-row-day { font-weight: 700; }
+.wx-row-place { color: var(--ink-2); font-size: .88rem; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wx-row-temp { font-weight: 700; }
+.wx-row-rain { text-align: right; color: var(--ink-2); font-size: .88rem; }
+.wx-trip summary { font-weight: 700; }
+.wx-row-day { white-space: nowrap; }

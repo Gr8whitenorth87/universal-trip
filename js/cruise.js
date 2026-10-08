@@ -170,6 +170,7 @@ export function renderNow(el) {
   const todaysPlaces = [...new Set(steps.flatMap((s) => [...(s.places || []), ...(s.choices || []).flatMap((c) => c.places || [])]))].map(place).filter((p) => p && p.lat != null);
   el.innerHTML = `<section class="now">
     ${countdown(day, now)}
+    ${ctx.weatherCard ? ctx.weatherCard(day.date, day.kind === "sea" ? "sea" : "port") : ""}
     <section class="block">
       <div class="block-head"><h2>${esc(day.title)}</h2></div>
       <ul class="upnext">${upcoming.map((s, i) => `<li class="${i === 0 && idx >= 0 ? "upnext-now" : ""}"><span class="soon-time">${esc(fmtTime(s.time))}</span><span><b>${esc(s.title)}</b><span class="muted">${esc(s.detail)}</span></span></li>`).join("")}</ul>
