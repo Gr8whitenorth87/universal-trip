@@ -128,6 +128,8 @@ export function icon(name) {
     walk: '<circle cx="13" cy="4" r="2"/><path d="m9 21 2-6 3 3v3M7 12l3-4 4 1 2 4 2 1M10 8l-1 5"/>',
     check: '<path d="m5 12 4 4 10-10"/>',
     refresh: '<path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/>',
+    up: '<path d="m6 15 6-6 6 6"/>',
+    down: '<path d="m6 9 6 6 6-6"/>',
     anchor: '<circle cx="12" cy="5" r="2"/><path d="M12 7v14M7 11h10M5 15a7 7 0 0 0 14 0"/>',
     waves: '<path d="M2 9c2-2 4-2 6 0s4 2 6 0 4-2 6 0M2 15c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/>',
     download: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',

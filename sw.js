@@ -1,6 +1,6 @@
 // Offline support: the app shell and trip data are cached so the plan, food and hunts work
 // with no signal. Map tiles are kept as you view them. Live waits always go to the network.
-const VERSION = "ut26-v6";
+const VERSION = "ut26-v7";
 const SHELL = [
   "./",
   "index.html",
@@ -13,6 +13,7 @@ const SHELL = [
   "js/lock.js",
   "js/cruise.js",
   "js/weather.js",
+  "js/decks.js",
   "vendor/leaflet/leaflet.js",
   "vendor/leaflet/leaflet.css",
   "fonts/big-shoulders-display-latin-800-normal.woff2",

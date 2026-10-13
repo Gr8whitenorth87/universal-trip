@@ -4,6 +4,7 @@ import { savedKey, decryptWith, askPassword, forgetKey } from "./lock.js";
 import { initMap, mapReady, invalidate, showLayer, fitPark, flyTo, drawMarkers, drawPlaces, setUser } from "./map.js";
 import * as Cruise from "./cruise.js";
 import * as Weather from "./weather.js";
+import * as Decks from "./decks.js";
 
 // ---------------------------------------------------------------- state
 const S = {
@@ -60,6 +61,7 @@ async function boot() {
   D.shows.forEach((s, i) => { s.key = `show-${i}`; });
   Cruise.initCruise({ S, openSheet, cantRide, showMap: () => go("map"), weatherCard: (d, k) => Weather.card(d, k) });
   Weather.initWeather(D.cruise && D.cruise.weather);
+  Decks.setData(D.cruise && D.cruise.decks);
   Weather.onWeather(() => { if (S.view === "today" || S.view === "now") renderView(); });
 
   const now = orlandoNow();
@@ -556,6 +558,11 @@ function ensureMap() {
   mapBuilt = true;
   const tools = $("#mapTools");
   renderMapTools();
+  const deckEl = $("#deckEl");
+  const rerenderDecks = () => Decks.render(deckEl);
+  deckEl.addEventListener("click", (e) => { Decks.onClick(e, rerenderDecks); });
+  deckEl.addEventListener("keydown", (e) => { Decks.onKey(e, rerenderDecks); });
+  deckEl.addEventListener("input", (e) => { Decks.onInput(e, rerenderDecks); });
   tools.addEventListener("click", (e) => {
     const mp = e.target.closest("[data-mapport]");
     if (mp) { S.mapPort = mp.dataset.mapport; renderMap(); return; }
@@ -609,6 +616,17 @@ function fitCurrentPark() {
 
 function renderMap() {
   if (!mapBuilt) return;
+  const deckEl = $("#deckEl");
+  if (S.park === "SHIP" && S.mapPort === "SHIP") {
+    renderMapTools();
+    deckEl.hidden = false;
+    $("#mapEl").style.visibility = "hidden";
+    if (S.pendingVenue) { Decks.focusVenue(S.pendingVenue); S.pendingVenue = null; deckEl.scrollTop = 0; }
+    Decks.render(deckEl);
+    return;
+  }
+  deckEl.hidden = true;
+  $("#mapEl").style.visibility = "";
   if (S.park === "SHIP") {
     renderMapTools();
     const pts = Cruise.mapPlaces(S.mapPort);

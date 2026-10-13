@@ -19,6 +19,7 @@ export function defaultPort(date) {
   const days = cruiseDays();
   const today = days.find((d) => d.date === date);
   if (today && PORT_ORDER.includes(today.port)) return today.port;
+  if (today && C().decks) return "SHIP";
   const next = days.find((d) => d.date >= date && PORT_ORDER.includes(d.port));
   return next ? next.port : "SKB";
 }
@@ -279,10 +280,11 @@ export function renderExplore(el) {
 // ---------------------------------------------------------------- map
 export function mapTools(port) {
   const c = C();
-  return `<div class="chips" role="group" aria-label="Port">
+  return `<div class="chips" role="group" aria-label="Ship or port">
+      ${c.decks ? `<button type="button" class="chip${port === "SHIP" ? " chip-on" : ""}" data-mapport="SHIP" aria-pressed="${port === "SHIP"}">Ship decks</button>` : ""}
       ${PORT_ORDER.map((p) => `<button type="button" class="chip${p === port ? " chip-on" : ""}" data-mapport="${p}" aria-pressed="${p === port}">${esc(c.ports[p].short)}</button>`).join("")}
     </div>
-    <div class="map-side"><button type="button" class="fab" data-action="locate" aria-label="Show my location">${icon("locate")}</button><button type="button" class="fab" data-action="offline" aria-label="Save this port's map for offline">${icon("download")}</button></div>`;
+    ${port === "SHIP" ? "" : `<div class="map-side"><button type="button" class="fab" data-action="locate" aria-label="Show my location">${icon("locate")}</button><button type="button" class="fab" data-action="offline" aria-label="Save this port's map for offline">${icon("download")}</button></div>`}`;
 }
 export function mapPlaces(port) { return C().places.filter((p) => p.port === port && p.lat != null); }
 
@@ -337,7 +339,7 @@ export function renderSheet(sel, el) {
       ${s.minHeight ? `<p><b>${s.minHeight}" minimum.</b></p>` : ""}
       ${blocked.length ? `<div class="callout callout-warn"><b>${esc(blocked.join(" and "))} can't do this one.</b>${s.alternatives ? `<p>${esc(s.alternatives)}</p>` : ""}</div>` : ""}
       <p>${esc(s.detail)}</p>
-      <p class="fine">Deck maps are in the Royal Caribbean app.</p>`;
+      ${C().decks && C().decks.venues.some((v) => v.id === s.key) ? `<div class="sheet-actions"><button type="button" class="btn btn-quiet" data-portmap="SHIP" data-dkfocus="${esc(s.key)}">${icon("map")} Find it on the deck guide</button></div>` : ""}`;
     return true;
   }
   return false;
@@ -347,6 +349,6 @@ export function handleClick(ds) {
   const S = ctx.S;
   if (ds.place) { const p = place(ds.place); if (p) ctx.openSheet({ type: "place", item: p }); return true; }
   if (ds.ship) { const s = spot(ds.ship); if (s) ctx.openSheet({ type: "ship", item: s }); return true; }
-  if (ds.portmap) { S.mapPort = ds.portmap; S.pendingPlace = ds.flyto || null; ctx.showMap(); return true; }
+  if (ds.portmap) { S.mapPort = ds.portmap; S.pendingPlace = ds.flyto || null; S.pendingVenue = ds.dkfocus || null; ctx.showMap(); return true; }
   return false;
 }

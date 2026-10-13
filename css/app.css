@@ -513,3 +513,50 @@ body.locked .top, body.locked .tabs, body.locked main, body.locked .map-wrap { d
 .wx-row-day { white-space: nowrap; }
 .wx-row-temp { font-size: .92rem; white-space: nowrap; }
 .wx-row-place { font-size: .84rem; }
+
+/* ---------- deck guide ---------- */
+.deck-wrap { position: absolute; inset: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; background: var(--paper); padding: 66px 16px 24px; z-index: 400; }
+.deck-wrap .dk { max-width: 760px; margin: 0 auto; display: grid; gap: 18px; }
+.dk-mines { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.dk-mine { width: 100%; display: grid; gap: 3px; text-align: left; border: 0; background: var(--surface); border-left: 6px solid var(--ship); border-radius: var(--r-md); padding: 10px 14px; box-shadow: var(--shadow); }
+.dk-mine-k { font-size: .78rem; font-weight: 700; color: var(--ship); }
+.dk-mine span { color: var(--ink-2); font-size: .92rem; }
+.dk-mine .dk-mine-dir { color: var(--ink); }
+.dk-label { font: 800 1.45rem/1.1 var(--display); letter-spacing: .015em; }
+.dk-search { width: 100%; font-size: 1rem; padding: 12px 14px; border-radius: var(--r-md); border: 1.5px solid var(--line); background: var(--surface); color: var(--ink); min-height: 48px; }
+.dk-search:focus { outline: 3px solid var(--sun); outline-offset: 1px; }
+.dk-svg { width: 100%; height: auto; display: block; background: var(--surface); border-radius: var(--r-lg); box-shadow: var(--shadow); padding: 8px 4px 4px; }
+.dk-hull { fill: color-mix(in srgb, var(--ship) 10%, transparent); stroke: color-mix(in srgb, var(--ship) 45%, transparent); stroke-width: 1.5; }
+.dk-div { stroke: var(--line); stroke-dasharray: 3 3; }
+.dk-row { cursor: pointer; }
+.dk-row rect { fill: var(--surface-2); stroke: var(--line); stroke-width: 1; }
+.dk-row:hover rect, .dk-row:focus rect { fill: color-mix(in srgb, var(--ship) 18%, var(--surface-2)); }
+.dk-row:focus { outline: none; }
+.dk-row:focus-visible rect { stroke: var(--sun); stroke-width: 2.5; }
+.dk-on rect { fill: var(--ship); stroke: var(--ship); }
+.dk-num { font: 700 10px var(--body); fill: var(--ink-2); }
+.dk-on .dk-num { fill: var(--ink); font-weight: 800; }
+.dk-cap { font: 700 10px var(--body); fill: var(--ink-2); }
+.dk-dot { stroke: var(--surface); stroke-width: 1; }
+.dk-home { fill: var(--sun); stroke: #7A5600; stroke-width: .8; }
+.dk-dot-food { fill: #E07A1F; } .dk-dot-pool { fill: #18A0C9; } .dk-dot-slide { fill: #2C6BED; }
+.dk-dot-kids { fill: #E5573A; } .dk-dot-show { fill: #7446DB; } .dk-dot-service { fill: #0B8F7C; }
+.dk-dot-adult { fill: #8A93A3; } .dk-dot-activity { fill: #2C6BED; } .dk-dot-bar { fill: #B0518F; } .dk-dot-shop { fill: #9C7B2E; } .dk-dot-cabins { fill: #8A93A3; } .dk-dot-you { fill: var(--sun); }
+.dk-legend { display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: .8rem; color: var(--ink-2); }
+.dk-lg { display: inline-flex; align-items: center; gap: 5px; }
+.dk-lg i { width: 10px; height: 10px; border-radius: 50%; background: var(--dk, #8A93A3); display: inline-block; }
+.dk-lg-star { width: 12px; height: 12px; }
+.dk-deck { background: var(--surface); border-radius: var(--r-lg); padding: 12px 14px; box-shadow: var(--shadow); display: grid; gap: 8px; }
+.dk-deck-head { display: flex; align-items: center; gap: 8px; }
+.dk-deck-head > div { flex: 1; text-align: center; }
+.dk-deck-head h3 { font: 800 1.6rem/1 var(--display); letter-spacing: .02em; }
+.dk-deck-head p { color: var(--ink-2); font-size: .9rem; }
+.dk-zone { margin: 6px 0 0; font-size: .82rem; color: var(--ink-2); font-weight: 700; }
+.dk-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.dk-v-btn { width: 100%; display: flex; gap: 10px; align-items: flex-start; text-align: left; border: 0; background: var(--surface-2); border-radius: var(--r-sm); padding: 9px 10px; }
+.dk-v-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--dk, #8A93A3); flex: none; margin-top: 5px; }
+.dk-v-body { display: grid; gap: 2px; min-width: 0; }
+.dk-v-body > span { color: var(--ink-2); font-size: .86rem; }
+.dk-v-body .dk-v-more { color: var(--ink); font-size: .92rem; margin-top: 4px; }
+.dk-v-food { --dk: #E07A1F; } .dk-v-pool { --dk: #18A0C9; } .dk-v-slide, .dk-v-activity { --dk: #2C6BED; } .dk-v-kids { --dk: #E5573A; }
+.dk-v-show { --dk: #7446DB; } .dk-v-service { --dk: #0B8F7C; } .dk-v-adult { --dk: #8A93A3; } .dk-v-bar { --dk: #B0518F; } .dk-v-shop { --dk: #9C7B2E; } .dk-v-you { --dk: var(--sun); }
