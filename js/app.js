@@ -151,6 +151,7 @@ function syncModeToDay(d) {
 }
 
 function go(view, push = true) {
+  if (view !== "map") Decks.closeFull();
   S.view = view;
   if (push) history.replaceState(null, "", `#${view}`);
   for (const b of document.querySelectorAll("#tabs [data-view]")) b.setAttribute("aria-current", b.dataset.view === view ? "page" : "false");
@@ -625,10 +626,11 @@ function renderMap() {
     const focus = S.pendingVenue && Decks.focusVenue(S.pendingVenue);
     S.pendingVenue = null;
     Decks.render(deckEl);
-    if (focus) requestAnimationFrame(() => Decks.scrollToOpen(false));
+    if (focus) requestAnimationFrame(() => Decks.scrollToOpen());
     return;
   }
   deckEl.hidden = true;
+  Decks.closeFull();
   $("#mapWrap").classList.remove("deck-mode");
   $("#mapEl").style.visibility = "";
   if (S.park === "SHIP") {

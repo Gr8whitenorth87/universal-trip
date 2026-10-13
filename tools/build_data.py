@@ -50,6 +50,59 @@ def decrypt(blob, password):
     return json.loads(raw)
 
 
+PLANS_SRC = PRIVATE_DIR / "deckplans"
+PLANS_OUT = ROOT / "data" / "plans"
+
+
+def _plan_marks(svg, marks):
+    """Outline our cabins on the official plan so they stand out."""
+    extra = []
+    for m in marks:
+        xs, ys = [], []
+        for rid in m["ids"]:
+            mm = re.search(r'id="%s"[^>]*\bd="M([\d.]+) ([\d.]+)h([\d.]+)v([\d.]+)' % re.escape(rid), svg) or \
+                 re.search(r'\bd="M([\d.]+) ([\d.]+)h([\d.]+)v([\d.]+)[^"]*"[^>]*id="%s"' % re.escape(rid), svg)
+            if not mm:
+                raise SystemExit(f"plan mark: {rid} not found")
+            x, y, w, h = (float(v) for v in mm.groups())
+            xs += [x, x + w]; ys += [y, y + h]
+        x0, x1, y0, y1 = min(xs) - 0.6, max(xs) + 0.6, min(ys) - 0.6, max(ys) + 0.6
+        extra.append(f'<rect x="{x0:.2f}" y="{y0:.2f}" width="{x1 - x0:.2f}" height="{y1 - y0:.2f}" rx="1.2" fill="#FFC21A" fill-opacity=".35" stroke="#E06A00" stroke-width=".9"/>')
+        lx, ly = x0 - 1.2, (y0 + y1) / 2
+        w = len(m["label"]) * 2.05 + 3
+        extra.append(f'<rect x="{lx - w:.2f}" y="{ly - 2.6:.2f}" width="{w:.2f}" height="5.2" rx="2.6" fill="#E06A00"/>'
+                     f'<text x="{lx - w / 2:.2f}" y="{ly + 1.15:.2f}" font-size="3.2" font-weight="700" font-family="Arial, Helvetica, sans-serif" fill="#fff" text-anchor="middle">{m["label"]}</text>')
+    return svg.replace("</svg>", "".join(extra) + "</svg>")
+
+
+def build_plans(password, decks_cfg):
+    """Official deck plans (SVG from royalcaribbean.com), gzipped and encrypted per deck."""
+    import gzip, hmac
+    from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+    key = _key(password)
+    aes = AESGCM(key)
+    PLANS_OUT.mkdir(parents=True, exist_ok=True)
+    marks = (decks_cfg or {}).get("planMarks", {})
+    meta = {}
+    sources = sorted(PLANS_SRC.glob("deck-*.svg")) if PLANS_SRC.exists() else []
+    if sources:
+        for f in sources:
+            dk = f.stem.split("-")[1]
+            svg = f.read_text()
+            if dk in marks:
+                svg = _plan_marks(svg, marks[dk])
+            raw = gzip.compress(svg.encode(), compresslevel=9, mtime=0)
+            iv = hmac.new(key, raw, "sha256").digest()[:12]  # same content -> same file, no git churn
+            (PLANS_OUT / f"deck-{dk}.bin").write_bytes(iv + aes.encrypt(iv, raw, None))
+    for f in sorted(PLANS_OUT.glob("deck-*.bin")):
+        dk = f.stem.split("-")[1]
+        b = f.read_bytes()
+        svg = gzip.decompress(aes.decrypt(b[:12], b[12:], None)).decode()
+        vb = [float(v) for v in re.search(r'viewBox="([^"]+)"', svg).group(1).split()]
+        meta[dk] = {"file": f"data/plans/{f.name}", "vb": vb, "kb": len(b) // 1024}
+    return meta
+
+
 def load_private(password):
     """Plain files in data/src/private/ win; otherwise restore them from the encrypted copy."""
     if all((PRIVATE_DIR / f).exists() for f in PRIVATE_FILES):
@@ -418,6 +471,11 @@ def main():
             for t in step.get("targets", []):
                 if t not in keys:
                     problems.append(f"plan target missing: {day['date']} {t}")
+    if data["cruise"].get("decks"):
+        data["cruise"]["decks"] = {**data["cruise"]["decks"], "plans": build_plans(password, data["cruise"]["decks"])}
+        data["cruise"]["decks"].pop("planMarks", None)
+        print(f"deck plans: {len(data['cruise']['decks']['plans'])} decks, "
+              f"{sum(p['kb'] for p in data['cruise']['decks']['plans'].values())} KB")
     OUT.write_text(json.dumps(encrypt(data, password)))
     print(f"wrote {OUT.relative_to(ROOT)}: {OUT.stat().st_size // 1024} KB, "
           f"{len(attractions)} attractions, {len(food)} food, {len(shows)} shows, {len(hunts)} hunts")

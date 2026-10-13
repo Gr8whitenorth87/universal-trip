@@ -1,6 +1,6 @@
 // Offline support: the app shell and trip data are cached so the plan, food and hunts work
 // with no signal. Map tiles are kept as you view them. Live waits always go to the network.
-const VERSION = "ut26-v8";
+const VERSION = "ut26-v9";
 const SHELL = [
   "./",
   "index.html",
@@ -23,6 +23,25 @@ const SHELL = [
   "fonts/atkinson-hyperlegible-next-latin-400-italic.woff2",
   "icons/icon-192.png",
   "manifest.webmanifest",
+  // Official deck plans (encrypted), so they work at sea without Wi-Fi.
+  "data/plans/deck-02.bin",
+  "data/plans/deck-03.bin",
+  "data/plans/deck-04.bin",
+  "data/plans/deck-05.bin",
+  "data/plans/deck-06.bin",
+  "data/plans/deck-07.bin",
+  "data/plans/deck-08.bin",
+  "data/plans/deck-09.bin",
+  "data/plans/deck-10.bin",
+  "data/plans/deck-11.bin",
+  "data/plans/deck-12.bin",
+  "data/plans/deck-14.bin",
+  "data/plans/deck-15.bin",
+  "data/plans/deck-16.bin",
+  "data/plans/deck-17.bin",
+  "data/plans/deck-18.bin",
+  "data/plans/deck-19.bin",
+  "data/plans/deck-20.bin",
 ];
 const TILES = "ut26-tiles";
 const MAX_TILES = 3000;
