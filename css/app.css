@@ -517,9 +517,12 @@ body.locked .top, body.locked .tabs, body.locked main, body.locked .map-wrap { d
 /* ---------- deck guide ---------- */
 .deck-wrap { position: absolute; inset: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; background: var(--paper); padding: 66px 16px 24px; z-index: 400; }
 .deck-wrap .dk { max-width: 760px; margin: 0 auto; display: grid; gap: 18px; }
-.dk-mines { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
-.dk-mine { width: 100%; display: grid; gap: 3px; text-align: left; border: 0; background: var(--surface); border-left: 6px solid var(--ship); border-radius: var(--r-md); padding: 10px 14px; box-shadow: var(--shadow); }
-.dk-mine-k { font-size: .78rem; font-weight: 700; color: var(--ship); }
+.dk-mines { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.dk-mines > li { display: grid; }
+.dk-mines .dk-mine-wide { grid-column: 1 / -1; }
+.dk-mine { width: 100%; display: grid; align-content: start; gap: 2px; text-align: left; border: 0; background: var(--surface); border-left: 6px solid var(--dk, var(--ship)); border-radius: var(--r-md); padding: 10px 12px; box-shadow: var(--shadow); color: var(--ink); }
+.dk-mine b { font-size: 1rem; line-height: 1.25; }
+.dk-mine-k { font-size: .78rem; font-weight: 700; color: var(--ink-2); }
 .dk-mine span { color: var(--ink-2); font-size: .92rem; }
 .dk-mine .dk-mine-dir { color: var(--ink); }
 .dk-label { font: 800 1.45rem/1.1 var(--display); letter-spacing: .015em; }
@@ -560,3 +563,7 @@ body.locked .top, body.locked .tabs, body.locked main, body.locked .map-wrap { d
 .dk-v-body .dk-v-more { color: var(--ink); font-size: .92rem; margin-top: 4px; }
 .dk-v-food { --dk: #E07A1F; } .dk-v-pool { --dk: #18A0C9; } .dk-v-slide, .dk-v-activity { --dk: #2C6BED; } .dk-v-kids { --dk: #E5573A; }
 .dk-v-show { --dk: #7446DB; } .dk-v-service { --dk: #0B8F7C; } .dk-v-adult { --dk: #8A93A3; } .dk-v-bar { --dk: #B0518F; } .dk-v-shop { --dk: #9C7B2E; } .dk-v-you { --dk: var(--sun); }
+.dk-mine-static { border-left-color: var(--line); }
+.dk-mine-static .dk-mine-k { color: var(--ink-2); }
+.map-wrap.deck-mode .map-tools { top: 0; left: 0; right: 0; padding: 10px 10px 8px; background: var(--paper); box-shadow: 0 1px 0 var(--line); }
+.dk-find .dk-hits { margin-top: 8px; }

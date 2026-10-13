@@ -8,20 +8,28 @@ const ZONE_NAME = { fore: "front", mid: "middle", aft: "back" };
 const ZONE_LABEL = { aft: "Back (aft)", mid: "Middle", fore: "Front (bow)" };
 const KIND_LABEL = { food: "Food", pool: "Pool", slide: "Slides", activity: "Activity", show: "Show", kids: "Kids", service: "Service", adult: "Adults only", shop: "Shop", bar: "Bar", cabins: "Cabins", you: "Yours" };
 
-let state = { deck: null, q: "" };
+const LEGEND = [["food", "Food"], ["pool", "Pools"], ["slide", "Slides and sports"], ["kids", "Kids"], ["show", "Shows"], ["bar", "Bars"], ["service", "Services"], ["adult", "Adults only"]];
+
+let state = { deck: null, q: "", open: null };
 
 function G() { return window.__deckData; }
 export function setData(d) { window.__deckData = d; if (state.deck == null && d) state.deck = d.home ? d.home.deck : d.decks[0].n; }
 
+// Plain-language route from the cabins. Venue-specific directions in the data win;
+// otherwise use the nearest elevator bank (the ship has forward and midship banks only).
 export function directions(v) {
+  if (v.dir != null) return v.dir;
   const h = G().home;
   if (!h || v.deck == null) return "";
   const zone = v.zone || "mid";
-  if (v.deck === h.deck && zone === h.zone) return `On your deck, near your cabins.`;
-  if (v.deck === h.deck) return `Stay on Deck ${v.deck} and walk toward the ${ZONE_NAME[zone]} of the ship.`;
-  const bank = h.banks && h.banks[zone] ? zone : h.zone;
-  const walk = bank === zone ? `it's at the ${ZONE_NAME[zone]}` : `then walk toward the ${ZONE_NAME[zone]}`;
-  return `Take the ${ZONE_NAME[bank]} elevators or stairs ${v.deck > h.deck ? "up" : "down"} to Deck ${v.deck}; ${walk}.`;
+  if (v.deck === h.deck) {
+    if (zone === h.zone) return "On your deck, a short walk from your cabins.";
+    return (h.same && h.same[zone]) || `Stay on Deck ${v.deck} and walk toward the ${ZONE_NAME[zone]} of the ship.`;
+  }
+  const ud = v.deck > h.deck ? "up" : "down";
+  const bank = h.bank || "midship";
+  if (zone === "mid") return `Take the ${bank} elevators or stairs ${ud} to Deck ${v.deck}.`;
+  return `Take the ${bank} elevators or stairs ${ud} to Deck ${v.deck}, then walk toward the ${ZONE_NAME[zone]}.`;
 }
 
 function sideView(sel) {
@@ -32,7 +40,8 @@ function sideView(sel) {
   const y = (n) => padT + (top - n) * rh;
   // Hull and superstructure outline (simplified, not to scale). Bow on the right.
   const hullTop = y(D.hullTop || 6);
-  const hull = `M8 ${hullTop} L${W - 6} ${hullTop} L${W - 30} ${H - 22} L22 ${H - 22} Z`;
+  const base = H - 22;
+  const hull = `M4 ${hullTop} L${W - 1} ${hullTop - 7} Q${W - 16} ${base - 18} ${W - 40} ${base} L24 ${base} Q10 ${base} 8 ${base - 14} Z`;
   const deckRows = D.decks.map((d) => {
     const yy = y(d.n);
     const w = d.span || [0, 1];
@@ -72,29 +81,34 @@ export function render(el) {
   const sel = state.deck;
   const deck = D.decks.find((d) => d.n === sel) || D.decks[0];
   const q = state.q.trim().toLowerCase();
-  const hits = q ? D.venues.filter((v) => `${v.name} ${v.kind} ${KIND_LABEL[v.kind] || ""} ${v.note || ""} ${v.alias || ""}`.toLowerCase().includes(q)) : [];
-  const mine = (D.mine || []).map((m) => `<li><button type="button" class="dk-mine" data-dkdeck="${m.deck}"${m.id ? ` data-dkv="${esc(m.id)}"` : ""}>
-      <span class="dk-mine-k">${esc(m.label)}</span><b>${esc(m.name)}</b><span>${esc(m.detail)}</span>${m.directions ? `<span class="dk-mine-dir">${esc(m.directions)}</span>` : ""}</button></li>`).join("");
+  const words = q.split(/\s+/).filter(Boolean).map((w) => new RegExp(`(^|[^a-z0-9])${w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`));
+  const hits = q ? D.venues.filter((v) => { const t = `${v.name} ${v.kind} ${KIND_LABEL[v.kind] || ""} ${v.note || ""} ${v.alias || ""}`.toLowerCase(); return words.every((re) => re.test(t)); }) : [];
+  const mine = (D.mine || []).map((m) => {
+    const v = m.id ? D.venues.find((x) => x.id === m.id) : null;
+    if (!v) return `<li class="dk-mine-wide"><div class="dk-mine dk-mine-static"><span class="dk-mine-k">${esc(m.label)}</span><b>${esc(m.name)}</b><span>${esc(m.detail)}</span></div></li>`;
+    const where = m.where || `Deck ${v.deck}, ${ZONE_NAME[v.zone] || ""}`;
+    return `<li${m.wide ? ' class="dk-mine-wide"' : ""}><button type="button" class="dk-mine dk-v-${esc(v.kind)}" data-dkv="${esc(v.id)}" data-dkmine="1"><span class="dk-mine-k">${esc(m.label)}</span><b>${esc(m.name)}</b><span>${esc(where)}</span></button></li>`;
+  }).join("");
   el.innerHTML = `<div class="dk">
-    <section class="block">
-      <h2>Our spots on the ship</h2>
-      <ul class="dk-mines">${mine}</ul>
+    <section class="block dk-find">
+      <label for="dkSearch" class="dk-label">Where is…</label>
+      <input id="dkSearch" class="dk-search" type="search" placeholder="Try: pizza, slides, Guest Services" value="${esc(state.q)}" autocomplete="off" enterkeyhint="search">
+      ${q ? `<ul class="dk-list dk-hits">${hits.map(venueRow).join("") || '<li class="muted">Nothing matches. Try another word.</li>'}</ul>` : ""}
     </section>
     <section class="block">
-      <label for="dkSearch" class="dk-label">Where is…</label>
-      <input id="dkSearch" class="dk-search" type="search" placeholder="Try: pizza, slides, Guest Services" value="${esc(state.q)}" autocomplete="off">
-      ${q ? `<ul class="dk-list">${hits.map(venueRow).join("") || '<li class="muted">Nothing matches. Try another word.</li>'}</ul>` : ""}
+      <h2>Our spots</h2>
+      <ul class="dk-mines">${mine}</ul>
     </section>
     <section class="block">
       <div class="block-head"><h2>Deck by deck</h2><span class="count">Tap a deck</span></div>
       ${sideView(deck.n)}
-      <div class="dk-legend">${["food", "pool", "slide", "kids", "show", "service", "adult"].map((k) => `<span class="dk-lg dk-v-${k}"><i></i>${KIND_LABEL[k]}</span>`).join("")}<span class="dk-lg"><svg viewBox="0 0 12 12" class="dk-lg-star" aria-hidden="true"><path class="dk-home" d="M6 .5l1.6 3.3 3.6.5-2.6 2.5.6 3.6L6 8.7 2.8 10.4l.6-3.6L.8 4.3l3.6-.5z"/></svg>Your cabins</span></div>
+      <div class="dk-legend">${LEGEND.map(([k, label]) => `<span class="dk-lg dk-v-${k}"><i></i>${label}</span>`).join("")}<span class="dk-lg"><svg viewBox="0 0 12 12" class="dk-lg-star" aria-hidden="true"><path class="dk-home" d="M6 .5l1.6 3.3 3.6.5-2.6 2.5.6 3.6L6 8.7 2.8 10.4l.6-3.6L.8 4.3l3.6-.5z"/></svg>Your cabins</span></div>
       <div class="dk-deck">
         <div class="dk-deck-head"><button type="button" class="icon-btn" data-dkstep="1" aria-label="Deck above">${icon("up")}</button><div><h3>Deck ${deck.n}</h3><p>${esc(deck.name || "")}</p></div><button type="button" class="icon-btn" data-dkstep="-1" aria-label="Deck below">${icon("down")}</button></div>
         ${ZONES.slice().reverse().map((z) => {
           const items = D.venues.filter((v) => v.deck === deck.n && v.zone === z);
           return items.length ? `<h4 class="dk-zone">${ZONE_LABEL[z]}</h4><ul class="dk-list">${items.map(venueRow).join("")}</ul>` : "";
-        }).join("") || '<p class="muted">Mostly staterooms.</p>'}
+        }).join("") || '<p class="muted">Staterooms. Nothing to visit on this deck.</p>'}
       </div>
     </section>
     <p class="fine">${esc(D.note || "")}</p>
@@ -110,7 +124,7 @@ export function onClick(e, rerender) {
   if (v) {
     const id = v.dataset.dkv;
     const ven = D.venues.find((x) => x.id === id);
-    if (v.classList.contains("dk-mine") && ven) { state.deck = ven.deck; state.open = id; state.q = ""; rerender(); scrollToDeck(); return true; }
+    if ((v.dataset.dkmine || v.closest(".dk-hits")) && ven) { state.deck = ven.deck; state.open = id; state.q = ""; rerender(); scrollToOpen(); return true; }
     state.open = state.open === id ? null : id;
     rerender();
     return true;
@@ -140,7 +154,14 @@ export function onInput(e, rerender) {
   return true;
 }
 export function focusVenue(id) {
-  const v = G() && G().venues.find((x) => x.id === id);
-  if (v) { state.deck = v.deck; state.open = id; state.q = ""; }
+  const v = G() && G().venues.find((x) => x.id === id || (x.keys || []).includes(id));
+  if (v) { state.deck = v.deck; state.open = v.id; state.q = ""; return true; }
+  return false;
 }
+export function hasVenue(id) { return !!(G() && G().venues.some((x) => x.id === id || (x.keys || []).includes(id))); }
 function scrollToDeck() { const d = document.querySelector(".dk-deck"); if (d) d.scrollIntoView({ block: "nearest", behavior: "smooth" }); }
+export function scrollToOpen(smooth = true) {
+  const o = document.querySelector(".dk-deck .dk-v-more");
+  const t = o ? o.closest("li") : document.querySelector(".dk-deck");
+  if (t) t.scrollIntoView({ block: "center", behavior: smooth ? "smooth" : "auto" });
+}

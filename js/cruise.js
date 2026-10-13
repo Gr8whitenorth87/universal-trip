@@ -339,7 +339,7 @@ export function renderSheet(sel, el) {
       ${s.minHeight ? `<p><b>${s.minHeight}" minimum.</b></p>` : ""}
       ${blocked.length ? `<div class="callout callout-warn"><b>${esc(blocked.join(" and "))} can't do this one.</b>${s.alternatives ? `<p>${esc(s.alternatives)}</p>` : ""}</div>` : ""}
       <p>${esc(s.detail)}</p>
-      ${C().decks && C().decks.venues.some((v) => v.id === s.key) ? `<div class="sheet-actions"><button type="button" class="btn btn-quiet" data-portmap="SHIP" data-dkfocus="${esc(s.key)}">${icon("map")} Find it on the deck guide</button></div>` : ""}`;
+      ${C().decks && C().decks.venues.some((v) => v.id === s.key || (v.keys || []).includes(s.key)) ? `<div class="sheet-actions"><button type="button" class="btn btn-quiet" data-portmap="SHIP" data-dkfocus="${esc(s.key)}">${icon("map")} Find it on the deck guide</button></div>` : ""}`;
     return true;
   }
   return false;

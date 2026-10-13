@@ -621,11 +621,15 @@ function renderMap() {
     renderMapTools();
     deckEl.hidden = false;
     $("#mapEl").style.visibility = "hidden";
-    if (S.pendingVenue) { Decks.focusVenue(S.pendingVenue); S.pendingVenue = null; deckEl.scrollTop = 0; }
+    $("#mapWrap").classList.add("deck-mode");
+    const focus = S.pendingVenue && Decks.focusVenue(S.pendingVenue);
+    S.pendingVenue = null;
     Decks.render(deckEl);
+    if (focus) requestAnimationFrame(() => Decks.scrollToOpen(false));
     return;
   }
   deckEl.hidden = true;
+  $("#mapWrap").classList.remove("deck-mode");
   $("#mapEl").style.visibility = "";
   if (S.park === "SHIP") {
     renderMapTools();
